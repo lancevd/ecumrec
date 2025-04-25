@@ -1,38 +1,81 @@
-import { Outlet, Link, useLocation } from 'react-router-dom';
-import { FaUserGraduate, FaUsers, FaClipboardList, FaCalendarAlt, FaChartBar, FaBook, FaEnvelope, FaCog, FaHome } from 'react-icons/fa';
-import Logo from '../assets/Ecummrec.png'
+import { useState } from "react";
+import { Outlet, Link, useLocation } from "react-router-dom";
+import {
+  FaUserGraduate,
+  FaUsers,
+  FaClipboardList,
+  FaCalendarAlt,
+  FaChartBar,
+  FaBook,
+  FaEnvelope,
+  FaCog,
+  FaHome,
+  FaBars,
+  FaTimes,
+} from "react-icons/fa";
+import Logo from "../assets/Ecummrec.png";
 
 const navItems = [
-  { label: 'Dashboard', icon: <FaHome />, to: '/counselor' },
-  { label: 'Student Directory', icon: <FaUsers />, to: '/counselor/students' },
-  { label: 'New Assessment', icon: <FaClipboardList />, to: '/counselor/new-assessment' },
-  { label: 'Assessment Queue', icon: <FaClipboardList />, to: '/counselor/assessment-queue' },
-  { label: 'Appointments', icon: <FaCalendarAlt />, to: '/counselor/appointments' },
-  { label: 'Analytics', icon: <FaChartBar />, to: '/counselor/analytics' },
-  { label: 'Resources', icon: <FaBook />, to: '/counselor/resources' },
-  { label: 'Messages', icon: <FaEnvelope />, to: '/counselor/messages' },
-  { label: 'Settings', icon: <FaCog />, to: '/counselor/settings' },
+  { label: "Dashboard", icon: <FaHome />, to: "/counselor" },
+  { label: "Student Directory", icon: <FaUsers />, to: "/counselor/students" },
+  {
+    label: "New Assessment",
+    icon: <FaClipboardList />,
+    to: "/counselor/new-assessment",
+  },
+  {
+    label: "Assessment Queue",
+    icon: <FaClipboardList />,
+    to: "/counselor/assessment-queue",
+  },
+  {
+    label: "Appointments",
+    icon: <FaCalendarAlt />,
+    to: "/counselor/appointments",
+  },
+  { label: "Analytics", icon: <FaChartBar />, to: "/counselor/analytics" },
+  { label: "Resources", icon: <FaBook />, to: "/counselor/resources" },
+  { label: "Messages", icon: <FaEnvelope />, to: "/counselor/messages" },
+  { label: "Settings", icon: <FaCog />, to: "/counselor/settings" },
 ];
 
 export default function CounselorLayout() {
   const location = useLocation();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="flex min-h-screen bg-[#f6f8fa]">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col min-h-screen">
+      {/* Mobile sidebar overlay */}
+      <div
+        className={`fixed inset-0 z-40 bg-black/30 bg-opacity-30 transition-opacity md:hidden ${
+          sidebarOpen ? "block" : "hidden"
+        }`}
+        onClick={() => setSidebarOpen(false)}
+        aria-hidden={!sidebarOpen}
+      />
+      {/* Sidebar itself */}
+      <aside
+        className={`
+          fixed z-50 inset-y-0 left-0 w-64 bg-white border-r border-gray-200 flex flex-col min-h-screen transform transition-transform duration-200
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          md:static md:translate-x-0 md:flex
+        `}
+        aria-label="Sidebar"
+      >
         <div className="flex items-center gap-2 px-6 py-6">
           <img
             src={Logo}
             alt="Electronic Cumulative Record Logo"
             className="h-8"
           />
-          {/* <span className="font-bold text-lg text-[#184C85]">ecumrec</span> */}
         </div>
         <nav className="flex-1 px-2 space-y-1">
           {navItems.map((item) => (
             <Link
               key={item.label}
               to={item.to}
+              onClick={() => setSidebarOpen(false)}
               className={`flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition-colors hover:bg-[#184C85]/10 text-[#184C85] ${
                 location.pathname === item.to
                   ? "bg-[#184C85]/10 font-semibold"
@@ -47,16 +90,32 @@ export default function CounselorLayout() {
         <div className="mt-auto px-6 py-4 text-xs text-gray-400">
           &copy; {new Date().getFullYear()} ecumrec
         </div>
+        {/* Close button on mobile */}
+        <button
+          className="absolute top-4 right-4 md:hidden text-2xl text-[#184C85] focus:outline-none"
+          onClick={() => setSidebarOpen(false)}
+          aria-label="Close sidebar"
+        >
+          <FaTimes />
+        </button>
       </aside>
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-h-screen">
         {/* Top Navbar */}
-        <header className="flex items-center justify-between bg-white border-b border-gray-200 px-6 h-16">
+        <header className="flex items-center justify-between bg-white border-b border-gray-200 px-4 md:px-6 h-16">
+          {/* Hamburger menu for mobile */}
+          <button
+            className="md:hidden text-2xl text-[#184C85] mr-2"
+            onClick={() => setSidebarOpen(true)}
+            aria-label="Open sidebar"
+          >
+            <FaBars />
+          </button>
           <div className="flex-1 flex items-center">
             <input
               type="text"
               placeholder="Search..."
-              className="w-72 px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85] bg-gray-50"
+              className="w-full max-w-xs px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85] bg-gray-50"
             />
           </div>
           <div className="flex items-center gap-4">
@@ -84,10 +143,10 @@ export default function CounselorLayout() {
           </div>
         </header>
         {/* Main Content */}
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 md:p-8">
           <Outlet />
         </main>
       </div>
     </div>
   );
-} 
+}
