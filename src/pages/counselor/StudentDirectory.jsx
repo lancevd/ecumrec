@@ -1,10 +1,5 @@
 import { Link } from 'react-router-dom';
-
-const students = [
-  { id: 1, name: 'John Doe', grade: '10', email: 'john@example.com' },
-  { id: 2, name: 'Jane Smith', grade: '11', email: 'jane@example.com' },
-  { id: 3, name: 'Michael Brown', grade: '12', email: 'michael@example.com' },
-];
+import { students } from '../../utils/data';
 
 export default function StudentDirectory() {
   return (
