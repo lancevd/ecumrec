@@ -19,7 +19,7 @@ export default function StudentDirectory() {
             </div>
             <Link
               to={`/counselor/students/${student.id}`}
-              className="text-primary font-medium hover:underline"
+              className="btn-primary font-medium hover:underline"
             >
               View Profile
             </Link>

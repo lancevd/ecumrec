@@ -40,10 +40,13 @@
 .btn-primary {
   background-color: var(--primary-color);
   color: var(--text-light);
+  padding: 0.8rem;
+  border-radius: 10px;
 }
 
 .btn-primary:hover {
   background-color: var(--primary-light);
+  color: var(--text-light);
 }
 
 .btn-secondary {
