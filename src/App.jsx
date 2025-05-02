@@ -24,17 +24,17 @@ import Messages from "./pages/counselor/Messages";
 import Settings from "./pages/counselor/Settings";
 
 // Student pages
-// import StudentDashboard from './pages/student/Dashboard';
-// import MyAssessments from './pages/student/MyAssessments';
-// import Schedule from './pages/student/Schedule';
-// import Resources from './pages/student/Resources';
-// import StudentMessages from './pages/student/Messages';
-// import ProgressTracker from './pages/student/ProgressTracker';
-// import Profile from './pages/student/Profile';
-// import Support from './pages/student/Support';
+import StudentDashboard from './pages/student/Dashboard';
+import MyAssessments from './pages/student/MyAssessments';
+import Schedule from './pages/student/Schedule';
+import Resources from './pages/student/Resources';
+import StudentMessages from './pages/student/Messages';
+import ProgressTracker from './pages/student/ProgressTracker';
+import Profile from './pages/student/Profile';
+import Support from './pages/student/Support';
 
 function App() {
-  return ( 
+  return (
     <main className="h-screen">
       <Routes>
         {/* Auth Routes */}
@@ -43,7 +43,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           {/* <Route path="/forgot-password" element={<ForgotPassword />} /> */}
         </Route>
-  
+
         {/* Counselor Routes */}
         <Route path="/counselor" element={<CounselorLayout />}>
           <Route index element={<CounselorDashboard />} />
@@ -57,9 +57,9 @@ function App() {
           <Route path="messages" element={<Messages />} />
           <Route path="settings" element={<Settings />} />
         </Route>
-  
+
         {/* Student Routes */}
-        {/* <Route path="/student" element={<StudentLayout />}>
+        <Route path="/student" element={<StudentLayout />}>
           <Route index element={<StudentDashboard />} />
           <Route path="assessments" element={<MyAssessments />} />
           <Route path="schedule" element={<Schedule />} />
@@ -68,10 +68,10 @@ function App() {
           <Route path="progress" element={<ProgressTracker />} />
           <Route path="profile" element={<Profile />} />
           <Route path="support" element={<Support />} />
-        </Route> */}
-  
+        </Route>
+
         {/* Default redirect to login */}
-        <Route path="*" element={<Login />} />
+        {/* <Route path="*" element={<Login />} /> */}
       </Routes>
     </main>
   );

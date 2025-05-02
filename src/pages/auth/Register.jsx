@@ -4,7 +4,7 @@ export default function Register() {
   return (
     <div className="w-full max-w-lg mx-auto bg-white rounded-xl shadow p-8 mt-8">
       <div className="flex justify-center mb-4">
-        <img src={require('../../assets/ecumrec-logo.png')} alt="Electronic Cumulative Record Logo" className="h-10" />
+        <img src={'../../assets/Ecummrec.png'} alt="Electronic Cumulative Record Logo" className="h-10" />
       </div>
       <h2 className="text-2xl font-bold text-center mb-6 text-[#184C85]">Create an account</h2>
       <form className="space-y-5">
