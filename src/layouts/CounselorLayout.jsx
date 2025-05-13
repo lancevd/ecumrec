@@ -35,7 +35,6 @@ const navItems = [
   },
   { label: "Analytics", icon: <FaChartBar />, to: "/counselor/analytics" },
   { label: "Resources", icon: <FaBook />, to: "/counselor/resources" },
-  { label: "Messages", icon: <FaEnvelope />, to: "/counselor/messages" },
   { label: "Settings", icon: <FaCog />, to: "/counselor/settings" },
 ];
 

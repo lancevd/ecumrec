@@ -29,7 +29,28 @@ const steps = [
     title: 'Family background',
     dynamicFamily: true,
   },
-  // ...other steps
+  {
+    title: 'Family Structure',
+    fields: [
+      { name: 'father_wives', label: "Father's Number of Wives", type: 'number', required: true, min: 1 },
+      { name: 'mother_position', label: "Mother's Position", type: 'select', options: ['First Wife', 'Second Wife', 'Third Wife', 'Fourth Wife'], required: true },
+      { name: 'total_siblings', label: 'Total Number of Siblings', type: 'number', required: true, min: 0 },
+      { name: 'male_siblings', label: 'Number of Male Siblings', type: 'number', required: true, min: 0 },
+      { name: 'female_siblings', label: 'Number of Female Siblings', type: 'number', required: true, min: 0 },
+      { name: 'position_among_siblings', label: 'Position Among Siblings', type: 'select', options: ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Other'], required: true },
+      { name: 'parents_status', label: "Parents' Status", type: 'select', options: ['Living Together', 'Living Apart', 'Separated', 'Divorced'], required: true },
+    ],
+  },
+  {
+    title: 'Educational Background',
+    dynamicEducation: true,
+  },
+  {
+    title: 'Additional Information',
+    fields: [
+      { name: 'additional_info', label: 'Additional Information', type: 'textarea', required: false },
+    ],
+  },
 ];
 
 const familyRoles = [
@@ -52,10 +73,26 @@ const familyFields = [
   { suffix: 'dob', label: 'Date of Birth', type: 'date' },
 ];
 
+const educationLevels = [
+  { key: 'primary', label: 'Primary School' },
+  { key: 'junior', label: 'Junior Secondary School' },
+  { key: 'senior', label: 'Senior Secondary School' },
+];
+
+const educationFields = [
+  { suffix: 'school_name', label: 'School Name', type: 'text' },
+  { suffix: 'admission_year', label: 'Year of Admission', type: 'number' },
+  { suffix: 'graduation_year', label: 'Year of Graduation', type: 'number' },
+  { suffix: 'leaving_reason', label: 'Reason for Leaving', type: 'text' },
+  { suffix: 'certificate_number', label: 'Certificate Number', type: 'text' },
+];
+
 export default function ProfileAssessmentForm() {
   const [step, setStep] = useState(0);
   const [activeRoles, setActiveRoles] = useState(['father']);
+  const [activeEducationLevels, setActiveEducationLevels] = useState(['primary']);
   const [familyError, setFamilyError] = useState('');
+  const [educationError, setEducationError] = useState('');
   const {
     register,
     handleSubmit,
@@ -79,7 +116,25 @@ export default function ProfileAssessmentForm() {
       }
       setFamilyError('');
     }
-    setStep((s) => Math.min(steps.length - 1, s + 1));
+    
+    if (steps[step].dynamicEducation) {
+      const values = getValues();
+      const hasPrimarySchool = activeEducationLevels.includes('primary') && 
+        values['primary_school_name'] && 
+        values['primary_school_name'].trim() !== '';
+      
+      if (!hasPrimarySchool) {
+        setEducationError('Please fill in the Primary School information.');
+        return;
+      }
+      setEducationError('');
+    }
+
+    if (step === steps.length - 1) {
+      handleSubmit(onSave)();
+    } else {
+      setStep((s) => Math.min(steps.length - 1, s + 1));
+    }
   };
 
   const onPrev = () => setStep((s) => Math.max(0, s - 1));
@@ -87,6 +142,13 @@ export default function ProfileAssessmentForm() {
   const toggleRole = (role) => {
     setActiveRoles((prev) =>
       prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
+    );
+  };
+
+  const toggleEducationLevel = (level) => {
+    if (level === 'primary') return;
+    setActiveEducationLevels((prev) =>
+      prev.includes(level) ? prev.filter((l) => l !== level) : [...prev, level]
     );
   };
 
@@ -172,6 +234,68 @@ export default function ProfileAssessmentForm() {
                   </div>
                 ))}
               </>
+            ) : currentStep.dynamicEducation ? (
+              <>
+                <div className="flex gap-4 mb-6">
+                  {educationLevels.map(({ key, label }) => (
+                    <button
+                      type="button"
+                      key={key}
+                      onClick={() => toggleEducationLevel(key)}
+                      className={`px-4 py-2 rounded-lg font-semibold border ${
+                        activeEducationLevels.includes(key)
+                          ? 'bg-[#184C85] text-white'
+                          : 'bg-white text-[#184C85] border-[#184C85]'
+                      }`}
+                    >
+                      {activeEducationLevels.includes(key)
+                        ? `Remove ${label}`
+                        : `Add ${label}`}
+                    </button>
+                  ))}
+                </div>
+                {educationError && (
+                  <div className="text-red-500 mb-4">{educationError}</div>
+                )}
+                {activeEducationLevels.map((level) => (
+                  <div key={level} className="border rounded-lg p-4 mb-6">
+                    <h3 className="font-bold text-[#184C85] mb-2">
+                      {educationLevels.find((l) => l.key === level).label}
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {educationFields.map((field) => {
+                        const fieldName = `${level}_${field.suffix}`;
+                        return (
+                          <div key={fieldName} className="mb-2">
+                            <label
+                              className="block mb-1 font-medium text-gray-700"
+                              htmlFor={fieldName}
+                            >
+                              {field.label}
+                              {field.suffix !== 'certificate_number' && (
+                                <span className="text-red-500 ml-1">*</span>
+                              )}
+                            </label>
+                            <input
+                              id={fieldName}
+                              type={field.type}
+                              {...register(fieldName, {
+                                required: field.suffix !== 'certificate_number',
+                              })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85]"
+                            />
+                            {errors[fieldName] && (
+                              <span className="text-xs text-red-500">
+                                This field is required
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {currentStep.fields.map((field) => (
@@ -190,7 +314,13 @@ export default function ProfileAssessmentForm() {
                         {field.description}
                       </div>
                     )}
-                    {field.type === "select" ? (
+                    {field.type === "textarea" ? (
+                      <textarea
+                        id={field.name}
+                        {...register(field.name, { required: field.required })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85] min-h-[100px]"
+                      />
+                    ) : field.type === "select" ? (
                       <select
                         id={field.name}
                         {...register(field.name, { required: field.required })}
@@ -248,7 +378,7 @@ export default function ProfileAssessmentForm() {
                   onClick={onNext}
                   className="px-3 md:px-6 py-2 rounded-lg font-semibold bg-[#184C85] text-white hover:bg-[#123a69] transition"
                 >
-                  Next
+                  {step === steps.length - 1 ? 'Submit' : 'Next'}
                 </button>
               </div>
             </div>

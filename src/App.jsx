@@ -20,7 +20,6 @@ import AssessmentQueue from "./pages/counselor/AssessmentQueue";
 import Appointments from "./pages/counselor/Appointments";
 import Analytics from "./pages/counselor/Analytics";
 import ResourcesLibrary from "./pages/counselor/ResourcesLibrary";
-import Messages from "./pages/counselor/Messages";
 import Settings from "./pages/counselor/Settings";
 
 // Student pages
@@ -28,10 +27,8 @@ import StudentDashboard from './pages/student/Dashboard';
 import MyAssessments from './pages/student/MyAssessments';
 import Schedule from './pages/student/Schedule';
 import Resources from './pages/student/Resources';
-import StudentMessages from './pages/student/Messages';
 import ProgressTracker from './pages/student/ProgressTracker';
 import Profile from './pages/student/Profile';
-import Support from './pages/student/Support';
 
 function App() {
   return (
@@ -54,7 +51,6 @@ function App() {
           <Route path="appointments" element={<Appointments />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="resources" element={<ResourcesLibrary />} />
-          <Route path="messages" element={<Messages />} />
           <Route path="settings" element={<Settings />} />
         </Route>
 
@@ -64,15 +60,16 @@ function App() {
           <Route path="assessments" element={<MyAssessments />} />
           <Route path="schedule" element={<Schedule />} />
           <Route path="resources" element={<Resources />} />
-          <Route path="messages" element={<StudentMessages />} />
           <Route path="progress" element={<ProgressTracker />} />
           <Route path="profile" element={<Profile />} />
-          <Route path="support" element={<Support />} />
         </Route>
 
         {/* Default redirect to login */}
         {/* <Route path="*" element={<Login />} /> */}
       </Routes>
+
+      <h1>Hello World</h1>
+      <h2>Hello I am your royal guyyyyy</h2>
     </main>
   );
 }

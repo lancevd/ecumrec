@@ -7,10 +7,8 @@ const navItems = [
   { label: 'My Assessments', icon: <FaClipboardList />, to: '/student/assessments' },
   { label: 'Schedule', icon: <FaCalendarAlt />, to: '/student/schedule' },
   { label: 'Resources & Tools', icon: <FaBook />, to: '/student/resources' },
-  { label: 'Messages', icon: <FaEnvelope />, to: '/student/messages' },
   { label: 'Progress Tracker', icon: <FaChartBar />, to: '/student/progress' },
   { label: 'Profile & Privacy', icon: <FaUser />, to: '/student/profile' },
-  { label: 'Support & FAQ', icon: <FaQuestionCircle />, to: '/student/support' },
 ];
 
 export default function StudentLayout() {
