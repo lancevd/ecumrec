@@ -23,12 +23,17 @@ import ResourcesLibrary from "./pages/counselor/ResourcesLibrary";
 import Settings from "./pages/counselor/Settings";
 
 // Student pages
-import StudentDashboard from './pages/student/Dashboard';
-import MyAssessments from './pages/student/MyAssessments';
-import Schedule from './pages/student/Schedule';
-import Resources from './pages/student/Resources';
-import ProgressTracker from './pages/student/ProgressTracker';
-import Profile from './pages/student/Profile';
+import StudentDashboard from "./pages/student/Dashboard";
+import MyAssessments from "./pages/student/MyAssessments";
+import Schedule from "./pages/student/Schedule";
+import Resources from "./pages/student/Resources";
+import ProgressTracker from "./pages/student/ProgressTracker";
+import Profile from "./pages/student/Profile";
+import Dashboard from "./pages/admin/Dashboard";
+import Students from "./pages/admin/Students";
+import Counselors from "./pages/admin/Counselors";
+import CreateUser from "./pages/admin/CreateUser";
+import AdminLayout from "./layouts/AdminLayout";
 
 function App() {
   return (
@@ -62,6 +67,15 @@ function App() {
           <Route path="resources" element={<Resources />} />
           <Route path="progress" element={<ProgressTracker />} />
           <Route path="profile" element={<Profile />} />
+        </Route>
+
+        {/* Admin Routes */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="students" element={<Students />} />
+          <Route path="counselors" element={<Counselors />} />
+          <Route path="create-user" element={<CreateUser />} />
+          {/* <Route path="/admin/settings" element={<Dashboard />} /> */}
         </Route>
 
         {/* Default redirect to login */}

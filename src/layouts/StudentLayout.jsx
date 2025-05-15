@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
+import Logo from "../assets/Ecummrec.png";
 import { FaHome, FaClipboardList, FaCalendarAlt, FaBook, FaEnvelope, FaChartBar, FaUser, FaQuestionCircle, FaBars, FaTimes } from 'react-icons/fa';
 
 const navItems = [
@@ -35,7 +36,7 @@ export default function StudentLayout() {
         aria-label="Sidebar"
       >
         <div className="flex items-center gap-2 px-6 py-6">
-          <img src={'../assets/ecumrec-logo.png'} alt="Electronic Cumulative Record Logo" className="h-8" />
+          <img src={Logo} alt="Electronic Cumulative Record Logo" className="h-8" />
           <span className="font-bold text-lg text-[#184C85]">ecumrec</span>
         </div>
         <nav className="flex-1 px-2 space-y-1">
