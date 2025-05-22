@@ -1,168 +1,229 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Logo from "../../assets/Ecummrec.png";
 
-export default function Login() {
-  const [userType, setUserType] = useState('school'); // school, counselor, student
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
-  const [error, setError] = useState('');
+const Login = () => {
   const navigate = useNavigate();
+  const [userType, setUserType] = useState("school");
+  const [formData, setFormData] = useState({
+    email: "",
+    admissionNumber: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     try {
-      const response = await axios.post(`http://localhost:5100/api/auth/${userType}/login`, formData);
-      const { token, user } = response.data;
-      
-      // Store token and user info in localStorage
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+      let response;
 
-      // Redirect based on role
-      switch (user.role) {
-        case 'admin':
-          navigate('/admin/dashboard');
-          break;
-        case 'staff':
-          navigate('/counselor/dashboard');
-          break;
-        case 'student':
-          navigate('/student/dashboard');
-          break;
-        default:
-          navigate('/');
+      if (userType === "school") {
+        response = await axiosInstance.post(
+          `auth/school/login`,
+          {
+            email: formData.email,
+            password: formData.password,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+      } else if (userType === "counselor") {
+        response = await axiosInstance.post(
+          `auth/counselor/login`,
+          {
+            email: formData.email,
+            password: formData.password,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+      } else if (userType === "student") {
+        response = await axiosInstance.post(
+          `auth/student/login`,
+          {
+            admissionNumber: formData.admissionNumber,
+            password: formData.password,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            withCredentials: true,
+          }
+        );
       }
-    } catch (error) {
-      setError(error.response?.data?.message || 'An error occurred during login');
+
+      const { token, user } = response.data;
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      // Redirect based on user role
+      if (user.role === "admin") {
+        navigate("/admin/dashboard");
+      } else if (user.role === "staff") {
+        navigate("/counselor/dashboard");
+      } else if (user.role === "student") {
+        navigate("/student/dashboard");
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || "An error occurred during login");
     }
   };
 
   return (
-    <div className="w-full max-w-md mx-auto bg-white rounded-xl shadow p-8 mt-8">
-      <div className="flex justify-center mb-4">
-        <img
-          src={"../../assets/Ecummrec.png"}
-          alt="Electronic Cumulative Record Logo"
-          className="h-10"
-        />
-      </div>
-      <h2 className="text-2xl font-bold text-center mb-6 text-[#184C85]">
-        Sign in to your account
-      </h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full md:w-3/5 space-y-8">
+        <div className="flex flex-col items-center">
+          <img src={Logo} alt="Electronic cumulative Record" />
+          <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
+            Sign in to your account
+          </h2>
+        </div>
 
-      {/* User Type Selection */}
-      <div className="mb-6">
-        <label className="block mb-2 font-medium text-gray-700">Login as</label>
-        <div className="flex gap-4">
+        {/* User Type Selection */}
+        <div className="flex justify-center space-x-4">
           <button
             type="button"
-            onClick={() => setUserType('school')}
-            className={`flex-1 py-2 px-4 rounded-lg ${
-              userType === 'school'
-                ? 'bg-[#184C85] text-white'
-                : 'bg-gray-100 text-gray-700'
+            onClick={() => setUserType("school")}
+            className={`px-4 py-2 rounded-md ${
+              userType === "school"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700"
             }`}
           >
             School
           </button>
           <button
             type="button"
-            onClick={() => setUserType('counselor')}
-            className={`flex-1 py-2 px-4 rounded-lg ${
-              userType === 'counselor'
-                ? 'bg-[#184C85] text-white'
-                : 'bg-gray-100 text-gray-700'
+            onClick={() => setUserType("counselor")}
+            className={`px-4 py-2 rounded-md ${
+              userType === "counselor"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700"
             }`}
           >
             Counselor
           </button>
           <button
             type="button"
-            onClick={() => setUserType('student')}
-            className={`flex-1 py-2 px-4 rounded-lg ${
-              userType === 'student'
-                ? 'bg-[#184C85] text-white'
-                : 'bg-gray-100 text-gray-700'
+            onClick={() => setUserType("student")}
+            className={`px-4 py-2 rounded-md ${
+              userType === "student"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700"
             }`}
           >
             Student
           </button>
         </div>
+
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="rounded-md flex flex-col gap-3 shadow-sm -space-y-px">
+            {userType !== "student" ? (
+              <div>
+                <label htmlFor="email" className="sr-only">
+                  Email address
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  placeholder="Email address"
+                  value={formData.email}
+                  onChange={handleChange}
+                />
+              </div>
+            ) : (
+              <div>
+                <label htmlFor="admissionNumber" className="sr-only">
+                  Admission Number
+                </label>
+                <input
+                  id="admissionNumber"
+                  name="admissionNumber"
+                  type="text"
+                  required
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  placeholder="Admission Number"
+                  value={formData.admissionNumber}
+                  onChange={handleChange}
+                />
+              </div>
+            )}
+            <div>
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          {error && (
+            <div className="text-red-500 text-sm text-center">{error}</div>
+          )}
+
+          <div>
+            <button
+              type="submit"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Sign in
+            </button>
+          </div>
+
+          <div className="text-sm text-center">
+            {userType === "school" && (
+              <a
+                href="/register"
+                className="font-medium text-blue-600 hover:text-blue-500"
+              >
+                Don't have an account? Register
+              </a>
+            )}
+            <div className="mt-2">
+              <a
+                href="/forgot-password"
+                className="font-medium text-blue-600 hover:text-blue-500"
+              >
+                Forgot your password?
+              </a>
+            </div>
+          </div>
+        </form>
       </div>
-
-      {error && (
-        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
-          {error}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div>
-          <label
-            htmlFor="email"
-            className="block mb-1 font-medium text-gray-700"
-          >
-            Your email
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="name@company.com"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85]"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="password"
-            className="block mb-1 font-medium text-gray-700"
-          >
-            Password
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            required
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="••••••••"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85]"
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full py-2 px-4 bg-[#184C85] text-white rounded-lg font-semibold hover:bg-[#123a69] transition"
-        >
-          Sign in
-        </button>
-        <div className="flex justify-between mt-2 text-sm">
-          <Link to={`/register?type=${userType}`} className="text-[#184C85] hover:underline">
-            Create account
-          </Link>
-          <Link
-            to="/forgot-password"
-            className="text-[#184C85] hover:underline"
-          >
-            Forgot password?
-          </Link>
-        </div>
-      </form>
     </div>
   );
-} 
+};
+
+export default Login;
