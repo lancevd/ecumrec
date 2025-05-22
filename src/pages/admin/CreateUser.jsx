@@ -18,7 +18,8 @@ export default function CreateUser() {
     try {
       const userData = {
         ...data,
-        schoolId: user.schoolId
+        schoolId: user.id,
+        role: userType === "student" ? "student" : "staff"
       };
 
       const response = await axiosInstance.post(
@@ -124,7 +125,7 @@ export default function CreateUser() {
                   </label>
                   <input
                     type="text"
-                    {...register("admissionNo", {
+                    {...register("admissionNumber", {
                       required: "Admission number is required",
                     })}
                     className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85]"
