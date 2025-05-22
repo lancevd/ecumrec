@@ -123,7 +123,7 @@ export default function CreateUser() {
                 {...register('phone', {
                   required: 'Phone number is required',
                   pattern: {
-                    value: /^\+?[1-9]\d{1,14}$/,
+                    // value: /^\+?[1-9]\d{1,14}$/,
                     message: 'Invalid phone number format',
                   },
                 })}
@@ -179,6 +179,23 @@ export default function CreateUser() {
                       {errors.yearOfAdmission.message}
                     </p>
                   )}
+                </div>
+              </>
+            )}
+
+            {userType === 'counselor' && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    specialization
+                  </label>
+                  <input
+                    type="text"
+                    {...register('specialization', {
+                      required: 'Specialization is required',
+                    })}
+                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85]"
+                  />
                 </div>
               </>
             )}

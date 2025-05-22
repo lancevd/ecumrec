@@ -81,9 +81,6 @@ function App() {
         {/* Default redirect to login */}
         {/* <Route path="*" element={<Login />} /> */}
       </Routes>
-
-      <h1>Hello World</h1>
-      <h2>Hello I am your royal guyyyyy</h2>
     </main>
   );
 }
