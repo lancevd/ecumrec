@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { axiosInstance } from "../../utils/axiosInstance";
+import toast from "react-hot-toast";
+import { useAuth } from "../../context/AuthContext";
 
 export default function CreateUser() {
   const [userType, setUserType] = useState("student");
+  const { user } = useAuth();
   const {
     register,
     handleSubmit,
@@ -13,19 +16,24 @@ export default function CreateUser() {
 
   const onSubmit = async (data) => {
     try {
+      const userData = {
+        ...data,
+        schoolId: user.schoolId
+      };
+
       const response = await axiosInstance.post(
         `/auth/${userType}/register`,
-        data
+        userData
       );
-      console.log("User created:", response.data);
+      
+      toast.success(`${userType === 'student' ? 'Student' : 'Counselor'} created successfully!`);
       reset();
-      // Optional: add success notification
     } catch (error) {
+      toast.error(error.response?.data?.message || "Error creating user");
       console.error(
         "Error creating user:",
         error.response?.data || error.message
       );
-      // Optional: add error notification
     }
   };
 
