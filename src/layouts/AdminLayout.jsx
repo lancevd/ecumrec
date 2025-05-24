@@ -31,8 +31,8 @@ export default function AdminLayout() {
                 to={item.path}
                 className={`flex items-center px-6 py-3 text-sm font-medium ${
                   isActive
-                    ? 'bg-[#2C6AA0] text-white'
-                    : 'text-gray-300 hover:bg-[#2C6AA0] hover:text-white'
+                    ? "bg-[#2C6AA0] text-white"
+                    : "text-gray-300 hover:bg-[#2C6AA0] hover:text-white"
                 }`}
               >
                 <Icon className="mr-3 h-5 w-5" />
@@ -41,6 +41,17 @@ export default function AdminLayout() {
             );
           })}
         </nav>
+        <div className="mt-auto px-6 py-4 text-xs text-gray-400">
+          <button
+            onClick={logout}
+            className="bg-red-500 text-white p-2 w-full rounded text-base"
+          >
+            Logout
+          </button>
+          <div className="mt-auto px-6 py-4 text-xs text-gray-400">
+            &copy; {new Date().getFullYear()} ecumrec
+          </div>
+        </div>
       </div>
 
       {/* Main Content */}
@@ -48,7 +59,8 @@ export default function AdminLayout() {
         <header className="bg-white shadow">
           <div className="px-6 py-4">
             <h2 className="text-xl font-semibold text-gray-800">
-              {navigation.find((item) => item.path === location.pathname)?.name || 'Dashboard'}
+              {navigation.find((item) => item.path === location.pathname)
+                ?.name || "Dashboard"}
             </h2>
           </div>
         </header>

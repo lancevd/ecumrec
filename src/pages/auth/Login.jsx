@@ -51,6 +51,7 @@ const Login = () => {
         withCredentials: true,
       });
 
+      console.log(response)
       const { token, user } = response.data;
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));

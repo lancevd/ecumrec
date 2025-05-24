@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { axiosInstance } from "../utils/axiosInstance";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -15,6 +16,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const checkAuth = () => {
     const token = localStorage.getItem("token");
@@ -55,6 +57,22 @@ export const AuthProvider = ({ children }) => {
       axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
       setUser(user);
+      
+      // Navigate to appropriate dashboard based on role
+      switch (user.role) {
+        case "admin":
+          navigate("/admin");
+          break;
+        case "staff":
+          navigate("/counselor");
+          break;
+        case "student":
+          navigate("/student");
+          break;
+        default:
+          navigate("/login");
+      }
+
       return user;
     } catch (error) {
       throw error;
@@ -66,6 +84,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("user");
     delete axiosInstance.defaults.headers.common["Authorization"];
     setUser(null);
+    navigate("/login");
   };
 
   const value = {

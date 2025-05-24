@@ -14,6 +14,7 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import Logo from "../assets/Ecummrec.png";
+import { useAuth } from "../context/AuthContext";
 
 const navItems = [
   { label: "Dashboard", icon: <FaHome />, to: "/counselor" },
@@ -41,6 +42,7 @@ const navItems = [
 export default function CounselorLayout() {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const {logout} = useAuth();
 
   return (
     <div className="flex min-h-screen bg-[#f6f8fa]">
@@ -87,7 +89,15 @@ export default function CounselorLayout() {
           ))}
         </nav>
         <div className="mt-auto px-6 py-4 text-xs text-gray-400">
-          &copy; {new Date().getFullYear()} ecumrec
+          <button
+            onClick={logout}
+            className="bg-red-500 text-white p-2 w-full rounded text-base"
+          >
+            Logout
+          </button>
+          <div className="mt-auto px-6 py-4 text-xs text-gray-400">
+            &copy; {new Date().getFullYear()} ecumrec
+          </div>
         </div>
         {/* Close button on mobile */}
         <button
