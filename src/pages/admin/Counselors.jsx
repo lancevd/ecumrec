@@ -1,32 +1,44 @@
-import { useState } from 'react';
-import { FaSearch, FaFilter, FaEdit, FaTrash } from 'react-icons/fa';
+import { useState, useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
+import { axiosInstance } from "../../utils/axiosInstance";
+import toast from "react-hot-toast";
+import { FaSearch, FaFilter, FaEdit, FaTrash } from "react-icons/fa";
+import Spinner from "../../components/Spinner";
 
-// Mock data for demonstration
-const mockCounselors = [
-  {
-    id: 1,
-    surname: 'Smith',
-    otherName: 'Jane',
-    email: 'jane.smith@example.com',
-    phone: '+1234567890',
-    specialization: 'Academic Counseling',
-    status: 'Active',
-  },
-  // Add more mock data as needed
-];
-
-export default function Counselors() {
-  const [searchTerm, setSearchTerm] = useState('');
+const Counselors = () => {
+  const { user } = useAuth();
+  const [counselors, setCounselors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
-    specialization: '',
-    status: '',
+    specialization: "",
+    status: "",
   });
 
-  const filteredCounselors = mockCounselors.filter((counselor) => {
+  useEffect(() => {
+    const fetchCounselors = async () => {
+      try {
+        const response = await axiosInstance.get(
+          `/users/counselors/${user.id}`
+        );
+        setCounselors(response.data.data);
+      } catch (error) {
+        toast.error(
+          error.response?.data?.message || "Error fetching counselors"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCounselors();
+  }, [user.schoolId]);
+
+  const filteredCounselors = counselors.filter((counselor) => {
     const matchesSearch =
-      counselor.surname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      counselor.otherName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      counselor.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      counselor.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       counselor.email.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesSpecialization =
@@ -41,16 +53,16 @@ export default function Counselors() {
 
   const handleEdit = (counselorId) => {
     // Implement edit functionality
-    console.log('Edit counselor:', counselorId);
+    console.log("Edit counselor:", counselorId);
   };
 
   const handleDelete = (counselorId) => {
     // Implement delete functionality
-    console.log('Delete counselor:', counselorId);
+    console.log("Delete counselor:", counselorId);
   };
 
   return (
-    <div>
+    <div className="p-6">
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg font-semibold text-[#184C85]">Counselors</h2>
@@ -90,9 +102,13 @@ export default function Counselors() {
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85]"
                 >
                   <option value="">All Specializations</option>
-                  <option value="Academic Counseling">Academic Counseling</option>
+                  <option value="Academic Counseling">
+                    Academic Counseling
+                  </option>
                   <option value="Career Counseling">Career Counseling</option>
-                  <option value="Personal Counseling">Personal Counseling</option>
+                  <option value="Personal Counseling">
+                    Personal Counseling
+                  </option>
                 </select>
               </div>
               <div>
@@ -116,73 +132,79 @@ export default function Counselors() {
         )}
 
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Email
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Phone
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Specialization
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredCounselors.map((counselor) => (
-                <tr key={counselor.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {counselor.surname} {counselor.otherName}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {counselor.email}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {counselor.phone}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {counselor.specialization}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        counselor.status === 'Active'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
-                      }`}
-                    >
-                      {counselor.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button
-                      onClick={() => handleEdit(counselor.id)}
-                      className="text-[#184C85] hover:text-[#123a69] mr-4"
-                    >
-                      <FaEdit />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(counselor.id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      <FaTrash />
-                    </button>
-                  </td>
+          {loading ? <Spinner /> : (
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Email
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Specialization
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredCounselors.map((counselor) => (
+                  <tr key={counselor._id}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
+                        {counselor.firstName} {counselor.lastName}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">
+                        {counselor.email}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">
+                        {counselor.specialization}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          counselor.active
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {counselor.active ? "Active" : "Inactive"}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <button
+                        onClick={() => {
+                          // Handle view details
+                        }}
+                        className="text-[#184C85] hover:text-[#123a69] mr-4"
+                      >
+                        View
+                      </button>
+                      <button
+                        onClick={() => {
+                          // Handle edit
+                        }}
+                        className="text-[#184C85] hover:text-[#123a69]"
+                      >
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
 
         {filteredCounselors.length === 0 && (
@@ -193,4 +215,6 @@ export default function Counselors() {
       </div>
     </div>
   );
-} 
+};
+
+export default Counselors;
