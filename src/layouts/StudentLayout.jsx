@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import Logo from "../assets/Ecummrec.png";
 import { FaHome, FaClipboardList, FaCalendarAlt, FaBook, FaEnvelope, FaChartBar, FaUser, FaQuestionCircle, FaBars, FaTimes } from 'react-icons/fa';
+import { useAuth } from '../context/AuthContext';
 
 const navItems = [
   { label: 'Home', icon: <FaHome />, to: '/student' },
@@ -15,13 +16,14 @@ const navItems = [
 export default function StudentLayout() {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const {logout} = useAuth()
 
   return (
     <div className="flex min-h-screen bg-[#f6f8fa]">
       {/* Sidebar overlay for mobile */}
       <div
         className={`fixed inset-0 z-40 bg-black bg-opacity-30 transition-opacity md:hidden ${
-          sidebarOpen ? 'block' : 'hidden'
+          sidebarOpen ? "block" : "hidden"
         }`}
         onClick={() => setSidebarOpen(false)}
         aria-hidden={!sidebarOpen}
@@ -30,13 +32,17 @@ export default function StudentLayout() {
       <aside
         className={`
           fixed z-50 inset-y-0 left-0 w-64 bg-white border-r border-gray-200 flex flex-col min-h-screen transform transition-transform duration-200
-          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
           md:static md:translate-x-0 md:flex
         `}
         aria-label="Sidebar"
       >
         <div className="flex items-center gap-2 px-6 py-6">
-          <img src={Logo} alt="Electronic Cumulative Record Logo" className="h-8" />
+          <img
+            src={Logo}
+            alt="Electronic Cumulative Record Logo"
+            className="h-8"
+          />
           <span className="font-bold text-lg text-[#184C85]">ecumrec</span>
         </div>
         <nav className="flex-1 px-2 space-y-1">
@@ -46,7 +52,9 @@ export default function StudentLayout() {
               to={item.to}
               onClick={() => setSidebarOpen(false)}
               className={`flex items-center gap-3 px-4 py-2 rounded-lg font-medium transition-colors hover:bg-[#184C85]/10 text-[#184C85] ${
-                location.pathname === item.to ? 'bg-[#184C85]/10 font-semibold' : ''
+                location.pathname === item.to
+                  ? "bg-[#184C85]/10 font-semibold"
+                  : ""
               }`}
             >
               <span className="text-lg">{item.icon}</span>
@@ -54,7 +62,13 @@ export default function StudentLayout() {
             </Link>
           ))}
         </nav>
-        <div className="mt-auto px-6 py-4 text-xs text-gray-400">&copy; {new Date().getFullYear()} ecumrec</div>
+        <div className="mt-auto px-6 py-4 text-xs text-gray-400">
+          <button onClick={logout} className="bg-red-500 text-white p-2 w-full rounded text-base">Logout</button>
+        <div className="mt-auto px-6 py-4 text-xs text-gray-400">
+          &copy; {new Date().getFullYear()} ecumrec
+        </div>
+        </div>
+
         {/* Close button on mobile */}
         <button
           className="absolute top-4 right-4 md:hidden text-2xl text-[#184C85] focus:outline-none"

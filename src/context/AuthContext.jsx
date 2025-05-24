@@ -16,17 +16,33 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Check if user is logged in on mount
+  const checkAuth = () => {
     const token = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
 
     if (token && storedUser) {
       setUser(JSON.parse(storedUser));
-      // Set the token in axios instance
       axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    } else {
+      setUser(null);
+      delete axiosInstance.defaults.headers.common["Authorization"];
     }
     setLoading(false);
+  };
+
+  useEffect(() => {
+    // Initial auth check
+    checkAuth();
+
+    // Listen for storage changes
+    const handleStorageChange = (e) => {
+      if (e.key === "token" || e.key === "user") {
+        checkAuth();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   const login = async (userData) => {
@@ -34,11 +50,8 @@ export const AuthProvider = ({ children }) => {
       const response = await axiosInstance.post("/auth/login", userData);
       const { token, user } = response.data;
 
-      // Store token and user info
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
-
-      // Set the token in axios instance
       axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
       setUser(user);
@@ -49,14 +62,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    // Clear local storage
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-
-    // Remove token from axios instance
     delete axiosInstance.defaults.headers.common["Authorization"];
-
-    // Clear user state
     setUser(null);
   };
 

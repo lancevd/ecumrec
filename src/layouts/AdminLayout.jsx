@@ -1,5 +1,6 @@
 import { Link, useLocation, Outlet } from 'react-router-dom';
 import { FaUsers, FaUserTie, FaChartBar, FaCog, FaUserPlus } from 'react-icons/fa';
+import { useAuth } from '../context/AuthContext';
 
 const navigation = [
   { name: 'Dashboard', path: '/admin', icon: FaChartBar },
@@ -11,6 +12,7 @@ const navigation = [
 
 export default function AdminLayout() {
   const location = useLocation();
+  const {logout} = useAuth()
 
   return (
     <div className="min-h-screen bg-gray-100">

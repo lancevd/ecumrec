@@ -1,6 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
 import "./App.css";
 
 // Layout components
@@ -40,54 +42,61 @@ import AdminLayout from "./layouts/AdminLayout";
 function App() {
   return (
     <AuthProvider>
-      {/* <Router> */}
         <Toaster position="top-right" />
         <main className="h-screen">
           <Routes>
             {/* Auth Routes */}
-            <Route element={<AuthLayout />}>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              {/* <Route path="/forgot-password" element={<ForgotPassword />} /> */}
+            <Route element={<PublicRoute />}>
+              <Route element={<AuthLayout />}>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+              </Route>
             </Route>
 
             {/* Counselor Routes */}
-            <Route path="/counselor" element={<CounselorLayout />}>
-              <Route index element={<CounselorDashboard />} />
-              <Route path="students" element={<StudentDirectory />} />
-              <Route path="students/:id" element={<StudentProfile />} />
-              <Route path="new-assessment" element={<NewAssessment />} />
-              <Route path="assessment-queue" element={<AssessmentQueue />} />
-              <Route path="appointments" element={<Appointments />} />
-              <Route path="analytics" element={<Analytics />} />
-              <Route path="resources" element={<ResourcesLibrary />} />
-              <Route path="settings" element={<Settings />} />
+            <Route element={<ProtectedRoute allowedRoles={["staff"]} />}>
+              <Route element={<CounselorLayout />}>
+                <Route path="/counselor" element={<CounselorDashboard />} />
+                <Route path="/counselor/students" element={<StudentDirectory />} />
+                <Route path="/counselor/students/:id" element={<StudentProfile />} />
+                <Route path="/counselor/new-assessment" element={<NewAssessment />} />
+                <Route path="/counselor/assessment-queue" element={<AssessmentQueue />} />
+                <Route path="/counselor/appointments" element={<Appointments />} />
+                <Route path="/counselor/analytics" element={<Analytics />} />
+                <Route path="/counselor/resources" element={<ResourcesLibrary />} />
+                <Route path="/counselor/settings" element={<Settings />} />
+              </Route>
             </Route>
 
             {/* Student Routes */}
-            <Route path="/student" element={<StudentLayout />}>
-              <Route index element={<StudentDashboard />} />
-              <Route path="assessments" element={<MyAssessments />} />
-              <Route path="schedule" element={<Schedule />} />
-              <Route path="resources" element={<Resources />} />
-              <Route path="progress" element={<ProgressTracker />} />
-              <Route path="profile" element={<Profile />} />
+            <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
+              <Route element={<StudentLayout />}>
+                <Route path="/student" element={<StudentDashboard />} />
+                <Route path="/student/assessments" element={<MyAssessments />} />
+                <Route path="/student/schedule" element={<Schedule />} />
+                <Route path="/student/resources" element={<Resources />} />
+                <Route path="/student/progress" element={<ProgressTracker />} />
+                <Route path="/student/profile" element={<Profile />} />
+              </Route>
             </Route>
 
             {/* Admin Routes */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="students" element={<Students />} />
-              <Route path="counselors" element={<Counselors />} />
-              <Route path="create-user" element={<CreateUser />} />
-              {/* <Route path="/admin/settings" element={<Dashboard />} /> */}
+            <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+              <Route element={<AdminLayout />}>
+                <Route path="/admin" element={<Dashboard />} />
+                <Route path="/admin/students" element={<Students />} />
+                <Route path="/admin/counselors" element={<Counselors />} />
+                <Route path="/admin/create-user" element={<CreateUser />} />
+              </Route>
             </Route>
 
-            {/* Default redirect to login */}
-            {/* <Route path="*" element={<Login />} /> */}
+            {/* Redirect root to login */}
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            
+            {/* Catch all route - redirect to login */}
+            <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
         </main>
-      {/* </Router> */}
     </AuthProvider>
   );
 }
