@@ -71,7 +71,7 @@ const familyFields = [
   { suffix: 'Religion', label: 'Religion', type: 'text', required: true },
   { suffix: 'EducationLevel', label: 'Education Level', type: 'text', required: true },
   { suffix: 'Occupation', label: 'Occupation', type: 'text', required: true },
-  { suffix: 'Deceased', label: 'Deceased?', type: 'select', options: ['true', 'false'], required: true },
+  { suffix: 'Deceased', label: 'Deceased?', type: 'select', options: ['Yes', 'No'], required: true },
   { suffix: 'Dob', label: 'Date of Birth', type: 'date', required: true },
 ];
 
@@ -193,10 +193,10 @@ export default function ProfileAssessmentForm() {
     if (steps[step].dynamicFamily) {
       const values = getValues();
       const hasAtLeastOne = activeRoles.some(role => values[`${role}_name`] && values[`${role}_name`].trim() !== '');
-      if (!hasAtLeastOne) {
-        setFamilyError('Please fill at least one family member name.');
-        return;
-      }
+      // if (!hasAtLeastOne) {
+      //   setFamilyError('Please fill at least one family member name.');
+      //   return;
+      // }
       setFamilyError('');
     }
     
