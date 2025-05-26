@@ -1,28 +1,30 @@
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useProfileAssessment } from '../../api/useProfileAssessment';
+import toast from 'react-hot-toast';
 
 const steps = [
   {
     title: "Student's personal data",
     fields: [
       { name: 'surname', label: 'Surname', type: 'text', required: true },
-      { name: 'first_name', label: 'First Name', type: 'text', required: true },
-      { name: 'sex', label: 'Sex', type: 'select', options: ['Male', 'Female'], required: true },
-      { name: 'admission_no', label: 'Admission No', type: 'text', required: true },
-      { name: 'year_of_admission', label: 'Year of Admission', type: 'number', required: true },
-      { name: 'college_house', label: 'College House', type: 'text', required: false },
-      { name: 'dob', label: 'Date of Birth', type: 'date', required: true },
-      { name: 'place_of_birth', label: 'Place of Birth', type: 'text', required: true },
-      { name: 'permanent_address', label: 'Permanent Home Address', type: 'text', required: true, description: 'P.O Box, PMB not acceptable' },
-      { name: 'contact_address', label: 'Contact Address', type: 'text', required: true },
-      { name: 'state_of_origin', label: 'State of Origin', type: 'text', required: true },
-      { name: 'languages_spoken', label: 'Languages Spoken', type: 'text', required: false },
-      { name: 'countries_visited', label: 'Countries Visited', type: 'text', required: false },
+      { name: 'firstName', label: 'First Name', type: 'text', required: true },
+      { name: 'gender', label: 'Sex', type: 'select', options: ['Male', 'Female'], required: true },
+      { name: 'admissionNumber', label: 'Admission No', type: 'text', required: true },
+      { name: 'yearOfAdmission', label: 'Year of Admission', type: 'number', required: true },
+      { name: 'collegeHouse', label: 'College House', type: 'text', required: false },
+      { name: 'dateOfBirth', label: 'Date of Birth', type: 'date', required: true },
+      { name: 'placeOfBirth', label: 'Place of Birth', type: 'text', required: true },
+      { name: 'address', label: 'Permanent Home Address', type: 'text', required: true, description: 'P.O Box, PMB not acceptable' },
+      { name: 'contactAddress', label: 'Contact Address', type: 'text', required: true },
+      { name: 'stateOfOrigin', label: 'State of Origin', type: 'text', required: true },
+      { name: 'languagesSpoken', label: 'Languages Spoken', type: 'text', required: false },
+      { name: 'countriesVisited', label: 'Countries Visited', type: 'text', required: false },
       { name: 'religion', label: 'Religion', type: 'text', required: false },
       { name: 'nationality', label: 'Nationality', type: 'text', required: true },
-      { name: 'change_of_name', label: 'Change of Name (if any)', type: 'text', required: false },
-      { name: 'change_of_name_date', label: 'Date', type: 'date', required: false },
-      { name: 'change_of_name_evidence', label: 'Evidence', type: 'file', required: false },
+      { name: 'changeOfName', label: 'Change of Name (if any)', type: 'text', required: false },
+      { name: 'changeOfNameDate', label: 'Date', type: 'date', required: false },
+      { name: 'evidence', label: 'Evidence', type: 'file', required: false },
     ],
   },
   {
@@ -93,6 +95,18 @@ export default function ProfileAssessmentForm() {
   const [activeEducationLevels, setActiveEducationLevels] = useState(['primary']);
   const [familyError, setFamilyError] = useState('');
   const [educationError, setEducationError] = useState('');
+  
+  const {
+    loading,
+    error,
+    profileData,
+    updatePersonalData,
+    updateFamilyBackground,
+    updateFamilyStructure,
+    updateEducationalBackground,
+    updateNotes,
+  } = useProfileAssessment();
+
   const {
     register,
     handleSubmit,
@@ -100,13 +114,82 @@ export default function ProfileAssessmentForm() {
     setValue,
     watch,
     getValues,
+    reset,
   } = useForm({ mode: 'onTouched' });
 
-  const onSave = (data) => {
-    alert('Saved! (Simulated)');
+  // Set form values when profile data is loaded
+  useEffect(() => {
+    if (profileData) {
+      // Set personal data
+      if (profileData.personalData) {
+        Object.entries(profileData.personalData).forEach(([key, value]) => {
+          setValue(key, value);
+        });
+      }
+
+      // Set family background
+      if (profileData.familyBackground && profileData.familyBackground.length > 0) {
+        const roles = profileData.familyBackground.map(member => member.relationship);
+        setActiveRoles(roles);
+        profileData.familyBackground.forEach((member, index) => {
+          Object.entries(member).forEach(([key, value]) => {
+            setValue(`${member.relationship}_${key}`, value);
+          });
+        });
+      }
+
+      // Set family structure
+      if (profileData.familyStructure) {
+        Object.entries(profileData.familyStructure).forEach(([key, value]) => {
+          setValue(key, value);
+        });
+      }
+
+      // Set educational background
+      if (profileData.educationalBackground && profileData.educationalBackground.length > 0) {
+        const levels = profileData.educationalBackground.map(edu => edu.level);
+        setActiveEducationLevels(levels);
+        profileData.educationalBackground.forEach((edu, index) => {
+          Object.entries(edu).forEach(([key, value]) => {
+            setValue(`${edu.level}_${key}`, value);
+          });
+        });
+      }
+
+      // Set notes
+      if (profileData.notes) {
+        setValue('additional_info', profileData.notes);
+      }
+    }
+  }, [profileData, setValue]);
+
+  const onSave = async (data) => {
+    try {
+      switch (step) {
+        case 0:
+          await updatePersonalData(data);
+          break;
+        case 1:
+          await updateFamilyBackground(data);
+          break;
+        case 2:
+          await updateFamilyStructure(data);
+          break;
+        case 3:
+          await updateEducationalBackground(data);
+          break;
+        case 4:
+          await updateNotes(data);
+          break;
+        default:
+          break;
+      }
+    } catch (error) {
+      console.error("Error saving data:", error);
+    }
   };
 
-  const onNext = () => {
+  const onNext = async () => {
     if (steps[step].dynamicFamily) {
       const values = getValues();
       const hasAtLeastOne = activeRoles.some(role => values[`${role}_name`] && values[`${role}_name`].trim() !== '');
@@ -130,10 +213,17 @@ export default function ProfileAssessmentForm() {
       setEducationError('');
     }
 
-    if (step === steps.length - 1) {
-      handleSubmit(onSave)();
-    } else {
-      setStep((s) => Math.min(steps.length - 1, s + 1));
+    try {
+      const data = getValues();
+      await onSave(data);
+      
+      if (step === steps.length - 1) {
+        toast.success('Profile assessment completed successfully!');
+      } else {
+        setStep((s) => Math.min(steps.length - 1, s + 1));
+      }
+    } catch (error) {
+      console.error("Error proceeding to next step:", error);
     }
   };
 
@@ -178,6 +268,17 @@ export default function ProfileAssessmentForm() {
           <h2 className="text-2xl font-bold mb-6 text-[#184C85]">
             {currentStep.title}
           </h2>
+          {loading && (
+            <div className="text-center py-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#184C85] mx-auto"></div>
+              <p className="mt-2 text-gray-600">Loading...</p>
+            </div>
+          )}
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-4">
+              {error}
+            </div>
+          )}
           <form onSubmit={handleSubmit(onSave)}>
             {currentStep.dynamicFamily ? (
               <>
@@ -361,7 +462,7 @@ export default function ProfileAssessmentForm() {
               <button
                 type="button"
                 onClick={onPrev}
-                disabled={step === 0}
+                disabled={step === 0 || loading}
                 className="px-3 md:px-6 py-2 rounded-lg font-semibold border border-gray-300 text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50"
               >
                 Previous
@@ -369,16 +470,18 @@ export default function ProfileAssessmentForm() {
               <div className="flex gap-4">
                 <button
                   type="submit"
-                  className="px-3 md:px-6 py-2 rounded-lg font-semibold bg-[#184C85] text-white hover:bg-[#123a69] transition"
+                  disabled={loading}
+                  className="px-3 md:px-6 py-2 rounded-lg font-semibold bg-[#184C85] text-white hover:bg-[#123a69] transition disabled:opacity-50"
                 >
-                  Save
+                  {loading ? 'Saving...' : 'Save'}
                 </button>
                 <button
                   type="button"
                   onClick={onNext}
-                  className="px-3 md:px-6 py-2 rounded-lg font-semibold bg-[#184C85] text-white hover:bg-[#123a69] transition"
+                  disabled={loading}
+                  className="px-3 md:px-6 py-2 rounded-lg font-semibold bg-[#184C85] text-white hover:bg-[#123a69] transition disabled:opacity-50"
                 >
-                  {step === steps.length - 1 ? 'Submit' : 'Next'}
+                  {loading ? 'Saving...' : step === steps.length - 1 ? 'Submit' : 'Next'}
                 </button>
               </div>
             </div>
