@@ -34,13 +34,13 @@ const steps = [
   {
     title: 'Family Structure',
     fields: [
-      { name: 'father_wives', label: "Father's Number of Wives", type: 'number', required: true, min: 1 },
-      { name: 'mother_position', label: "Mother's Position", type: 'select', options: ['First Wife', 'Second Wife', 'Third Wife', 'Fourth Wife'], required: true },
-      { name: 'total_siblings', label: 'Total Number of Siblings', type: 'number', required: true, min: 0 },
-      { name: 'male_siblings', label: 'Number of Male Siblings', type: 'number', required: true, min: 0 },
-      { name: 'female_siblings', label: 'Number of Female Siblings', type: 'number', required: true, min: 0 },
-      { name: 'position_among_siblings', label: 'Position Among Siblings', type: 'select', options: ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Other'], required: true },
-      { name: 'parents_status', label: "Parents' Status", type: 'select', options: ['Living Together', 'Living Apart', 'Separated', 'Divorced'], required: true },
+      { name: 'fatherWives', label: "Father's Number of Wives", type: 'number', required: true, min: 1 },
+      { name: 'motherPosition', label: "Mother's Position", type: 'select', options: ['First Wife', 'Second Wife', 'Third Wife', 'Fourth Wife'], required: true },
+      { name: 'totalSiblings', label: 'Total Number of Siblings', type: 'number', required: true, min: 0 },
+      { name: 'maleSiblings', label: 'Number of Male Siblings', type: 'number', required: true, min: 0 },
+      { name: 'femaleSiblings', label: 'Number of Female Siblings', type: 'number', required: true, min: 0 },
+      { name: 'positionAmongSiblings', label: 'Position Among Siblings', type: 'select', options: ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Other'], required: true },
+      { name: 'parentsStatus', label: "Parents' Status", type: 'select', options: ['Living Together', 'Living Apart', 'Separated', 'Divorced'], required: true },
     ],
   },
   {
@@ -62,17 +62,17 @@ const familyRoles = [
 ];
 
 const familyFields = [
-  { suffix: 'name', label: 'Name', type: 'text' },
-  { suffix: 'contact_address', label: 'Contact Address', type: 'text' },
-  { suffix: 'residential_address', label: 'Residential Address', type: 'text' },
-  { suffix: 'phone', label: 'Phone', type: 'text' },
-  { suffix: 'state', label: 'State', type: 'text' },
-  { suffix: 'nationality', label: 'Nationality', type: 'text' },
-  { suffix: 'religion', label: 'Religion', type: 'text' },
-  { suffix: 'education_level', label: 'Education Level', type: 'text' },
-  { suffix: 'occupation', label: 'Occupation', type: 'text' },
-  { suffix: 'deceased', label: 'Deceased?', type: 'select', options: ['Yes', 'No'] },
-  { suffix: 'dob', label: 'Date of Birth', type: 'date' },
+  { suffix: 'Name', label: 'Name', type: 'text', required: true },
+  { suffix: 'ContactAddress', label: 'Contact Address', type: 'text', required: true },
+  { suffix: 'ResidentialAddress', label: 'Residential Address', type: 'text', required: true },
+  { suffix: 'Phone', label: 'Phone', type: 'text', required: true },
+  { suffix: 'State', label: 'State', type: 'text', required: true },
+  { suffix: 'Nationality', label: 'Nationality', type: 'text', required: true },
+  { suffix: 'Religion', label: 'Religion', type: 'text', required: true },
+  { suffix: 'EducationLevel', label: 'Education Level', type: 'text', required: true },
+  { suffix: 'Occupation', label: 'Occupation', type: 'text', required: true },
+  { suffix: 'Deceased', label: 'Deceased?', type: 'select', options: ['true', 'false'], required: true },
+  { suffix: 'Dob', label: 'Date of Birth', type: 'date', required: true },
 ];
 
 const educationLevels = [
@@ -82,11 +82,11 @@ const educationLevels = [
 ];
 
 const educationFields = [
-  { suffix: 'school_name', label: 'School Name', type: 'text' },
-  { suffix: 'admission_year', label: 'Year of Admission', type: 'number' },
-  { suffix: 'graduation_year', label: 'Year of Graduation', type: 'number' },
-  { suffix: 'leaving_reason', label: 'Reason for Leaving', type: 'text' },
-  { suffix: 'certificate_number', label: 'Certificate Number', type: 'text' },
+  { suffix: 'SchoolName', label: 'School Name', type: 'text' },
+  { suffix: 'AdmissionYear', label: 'Year of Admission', type: 'number' },
+  { suffix: 'GraduationYear', label: 'Year of Graduation', type: 'number' },
+  { suffix: 'LeavingReason', label: 'Reason for Leaving', type: 'text' },
+  { suffix: 'CertificateNumber', label: 'Certificate Number', type: 'text' },
 ];
 
 export default function ProfileAssessmentForm() {
@@ -216,11 +216,11 @@ export default function ProfileAssessmentForm() {
     try {
       const data = getValues();
       await onSave(data);
-      
-      if (step === steps.length - 1) {
+
+    if (step === steps.length - 1) {
         toast.success('Profile assessment completed successfully!');
-      } else {
-        setStep((s) => Math.min(steps.length - 1, s + 1));
+    } else {
+      setStep((s) => Math.min(steps.length - 1, s + 1));
       }
     } catch (error) {
       console.error("Error proceeding to next step:", error);
@@ -288,45 +288,74 @@ export default function ProfileAssessmentForm() {
                       type="button"
                       key={key}
                       onClick={() => toggleRole(key)}
-                      className={`px-4 py-2 rounded-lg font-semibold border ${activeRoles.includes(key) ? 'bg-[#184C85] text-white' : 'bg-white text-[#184C85] border-[#184C85]'}`}
+                      className={`px-4 py-2 rounded-lg font-semibold border ${
+                        activeRoles.includes(key)
+                          ? "bg-[#184C85] text-white"
+                          : "bg-white text-[#184C85] border-[#184C85]"
+                      }`}
                     >
-                      {activeRoles.includes(key) ? `Remove ${label}` : `Add ${label}`}
+                      {activeRoles.includes(key)
+                        ? `Remove ${label}`
+                        : `Add ${label}`}
                     </button>
                   ))}
                 </div>
                 {activeRoles.length === 0 && (
-                  <div className="text-red-500 mb-4">Please add at least one family member.</div>
+                  <div className="text-red-500 mb-4">
+                    Please add at least one family member.
+                  </div>
                 )}
-                {familyError && <div className="text-red-500 mb-4">{familyError}</div>}
+                {familyError && (
+                  <div className="text-red-500 mb-4">{familyError}</div>
+                )}
                 {activeRoles.map((role) => (
                   <div key={role} className="border rounded-lg p-4 mb-6">
-                    <h3 className="font-bold text-[#184C85] mb-2">{familyRoles.find(r => r.key === role).label}</h3>
+                    <h3 className="font-bold text-[#184C85] mb-2">
+                      {familyRoles.find((r) => r.key === role).label}
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {familyFields.map((field) => {
-                        const fieldName = `${role}_${field.suffix}`;
+                        const fieldName = `${role}${field.suffix}`;
                         return (
                           <div key={fieldName} className="mb-2">
-                            <label className="block mb-1 font-medium text-gray-700" htmlFor={fieldName}>
+                            <label
+                              className="block mb-1 font-medium text-gray-700"
+                              htmlFor={fieldName}
+                            >
                               {field.label}
+                              {field.required && (
+                                <span className="text-red-500 ml-1">*</span>
+                              )}
                             </label>
-                            {field.type === 'select' ? (
+                            {field.type === "select" ? (
                               <select
                                 id={fieldName}
-                                {...register(fieldName)}
+                                {...register(fieldName, {
+                                  required: field.required,
+                                })}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85]"
                               >
                                 <option value="">Select</option>
                                 {field.options.map((opt) => (
-                                  <option key={opt} value={opt}>{opt}</option>
+                                  <option key={opt} value={opt}>
+                                    {opt}
+                                  </option>
                                 ))}
                               </select>
                             ) : (
                               <input
                                 id={fieldName}
                                 type={field.type}
-                                {...register(fieldName)}
+                                {...register(fieldName, {
+                                  required: field.required,
+                                })}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85]"
                               />
+                            )}
+                            {errors[fieldName] && (
+                              <span className="text-xs text-red-500">
+                                This field is required
+                              </span>
                             )}
                           </div>
                         );
@@ -345,8 +374,8 @@ export default function ProfileAssessmentForm() {
                       onClick={() => toggleEducationLevel(key)}
                       className={`px-4 py-2 rounded-lg font-semibold border ${
                         activeEducationLevels.includes(key)
-                          ? 'bg-[#184C85] text-white'
-                          : 'bg-white text-[#184C85] border-[#184C85]'
+                          ? "bg-[#184C85] text-white"
+                          : "bg-white text-[#184C85] border-[#184C85]"
                       }`}
                     >
                       {activeEducationLevels.includes(key)
@@ -373,7 +402,7 @@ export default function ProfileAssessmentForm() {
                               htmlFor={fieldName}
                             >
                               {field.label}
-                              {field.suffix !== 'certificate_number' && (
+                              {field.suffix !== "certificate_number" && (
                                 <span className="text-red-500 ml-1">*</span>
                               )}
                             </label>
@@ -381,7 +410,7 @@ export default function ProfileAssessmentForm() {
                               id={fieldName}
                               type={field.type}
                               {...register(fieldName, {
-                                required: field.suffix !== 'certificate_number',
+                                required: field.suffix !== "certificate_number",
                               })}
                               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85]"
                             />
@@ -439,7 +468,9 @@ export default function ProfileAssessmentForm() {
                         id={field.name}
                         type="file"
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85]"
-                        onChange={(e) => setValue(field.name, e.target.files[0])}
+                        onChange={(e) =>
+                          setValue(field.name, e.target.files[0])
+                        }
                       />
                     ) : (
                       <input
@@ -473,7 +504,7 @@ export default function ProfileAssessmentForm() {
                   disabled={loading}
                   className="px-3 md:px-6 py-2 rounded-lg font-semibold bg-[#184C85] text-white hover:bg-[#123a69] transition disabled:opacity-50"
                 >
-                  {loading ? 'Saving...' : 'Save'}
+                  {loading ? "Saving..." : "Save"}
                 </button>
                 <button
                   type="button"
@@ -481,7 +512,11 @@ export default function ProfileAssessmentForm() {
                   disabled={loading}
                   className="px-3 md:px-6 py-2 rounded-lg font-semibold bg-[#184C85] text-white hover:bg-[#123a69] transition disabled:opacity-50"
                 >
-                  {loading ? 'Saving...' : step === steps.length - 1 ? 'Submit' : 'Next'}
+                  {loading
+                    ? "Saving..."
+                    : step === steps.length - 1
+                    ? "Submit"
+                    : "Next"}
                 </button>
               </div>
             </div>
