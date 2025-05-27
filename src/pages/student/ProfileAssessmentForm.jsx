@@ -171,7 +171,7 @@ const steps = [
     title: "Additional Information",
     fields: [
       {
-        name: "additional_info",
+        name: "notes",
         label: "Additional Information",
         type: "textarea",
         required: false,
@@ -243,6 +243,7 @@ export default function ProfileAssessmentForm() {
   ]);
   const [familyError, setFamilyError] = useState("");
   const [educationError, setEducationError] = useState("");
+  const [editing, setEditing]= useState(false)
 
   const {
     loading,
@@ -309,7 +310,7 @@ export default function ProfileAssessmentForm() {
         setActiveEducationLevels(levels);
         profileData.educationalBackground.forEach((edu, index) => {
           Object.entries(edu).forEach(([key, value]) => {
-            setValue(`${edu.level}_${key}`, value);
+            setValue(`${edu.level}${key}`, value);
           });
         });
       }
@@ -381,8 +382,8 @@ export default function ProfileAssessmentForm() {
       const values = getValues();
       const hasPrimarySchool =
         activeEducationLevels.includes("primary") &&
-        values["primary_school_name"] &&
-        values["primary_school_name"].trim() !== "";
+        values["primarySchoolName"] &&
+        values["primarySchoolName"].trim() !== "";
 
       if (!hasPrimarySchool) {
         setEducationError("Please fill in the Primary School information.");
@@ -572,7 +573,7 @@ export default function ProfileAssessmentForm() {
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {educationFields.map((field) => {
-                        const fieldName = `${level}_${field.suffix}`;
+                        const fieldName = `${level}${field.suffix}`;
                         return (
                           <div key={fieldName} className="mb-2">
                             <label
@@ -668,14 +669,23 @@ export default function ProfileAssessmentForm() {
               </div>
             )}
             <div className="flex justify-between mt-8">
-              <button
-                type="button"
-                onClick={onPrev}
-                disabled={step === 0 || loading}
-                className="px-3 md:px-6 py-2 rounded-lg font-semibold border border-gray-300 text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50"
-              >
-                Previous
-              </button>
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  onClick={onPrev}
+                  disabled={step === 0 || loading}
+                  className="px-3 md:px-6 py-2 rounded-lg font-semibold border border-gray-300 text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50"
+                >
+                  Previous
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditing(!editing)}
+                  className="px-3 md:px-6 py-2 rounded-lg font-semibold border border-gray-300 bg-[#184C85] hover:bg-[#224b77] text-white disabled:opacity-50"
+                >
+                  {editing ? "Preview" : "Edit"}
+                </button>
+              </div>
               <div className="flex gap-4">
                 <button
                   type="submit"
