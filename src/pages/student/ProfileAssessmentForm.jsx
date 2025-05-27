@@ -1,101 +1,249 @@
-import { useForm } from 'react-hook-form';
-import { useState, useEffect } from 'react';
-import { useProfileAssessment } from '../../api/useProfileAssessment';
-import toast from 'react-hot-toast';
+import { useForm } from "react-hook-form";
+import { useState, useEffect } from "react";
+import { useProfileAssessment } from "../../api/useProfileAssessment";
+import toast from "react-hot-toast";
 
 const steps = [
   {
     title: "Student's personal data",
     fields: [
-      { name: 'surname', label: 'Surname', type: 'text', required: true },
-      { name: 'firstName', label: 'First Name', type: 'text', required: true },
-      { name: 'gender', label: 'Sex', type: 'select', options: ['Male', 'Female'], required: true },
-      { name: 'admissionNumber', label: 'Admission No', type: 'text', required: true },
-      { name: 'yearOfAdmission', label: 'Year of Admission', type: 'number', required: true },
-      { name: 'collegeHouse', label: 'College House', type: 'text', required: false },
-      { name: 'dateOfBirth', label: 'Date of Birth', type: 'date', required: true },
-      { name: 'placeOfBirth', label: 'Place of Birth', type: 'text', required: true },
-      { name: 'address', label: 'Permanent Home Address', type: 'text', required: true, description: 'P.O Box, PMB not acceptable' },
-      { name: 'contactAddress', label: 'Contact Address', type: 'text', required: true },
-      { name: 'stateOfOrigin', label: 'State of Origin', type: 'text', required: true },
-      { name: 'languagesSpoken', label: 'Languages Spoken', type: 'text', required: false },
-      { name: 'countriesVisited', label: 'Countries Visited', type: 'text', required: false },
-      { name: 'religion', label: 'Religion', type: 'text', required: false },
-      { name: 'nationality', label: 'Nationality', type: 'text', required: true },
-      { name: 'changeOfName', label: 'Change of Name (if any)', type: 'text', required: false },
-      { name: 'changeOfNameDate', label: 'Date', type: 'date', required: false },
-      { name: 'evidence', label: 'Evidence', type: 'file', required: false },
+      { name: "surname", label: "Surname", type: "text", required: true },
+      { name: "firstName", label: "First Name", type: "text", required: true },
+      {
+        name: "gender",
+        label: "Sex",
+        type: "select",
+        options: ["Male", "Female"],
+        required: true,
+      },
+      {
+        name: "admissionNumber",
+        label: "Admission No",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "yearOfAdmission",
+        label: "Year of Admission",
+        type: "number",
+        required: true,
+      },
+      {
+        name: "collegeHouse",
+        label: "College House",
+        type: "text",
+        required: false,
+      },
+      {
+        name: "dateOfBirth",
+        label: "Date of Birth",
+        type: "date",
+        required: true,
+      },
+      {
+        name: "placeOfBirth",
+        label: "Place of Birth",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "address",
+        label: "Permanent Home Address",
+        type: "text",
+        required: true,
+        description: "P.O Box, PMB not acceptable",
+      },
+      {
+        name: "contactAddress",
+        label: "Contact Address",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "stateOfOrigin",
+        label: "State of Origin",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "languagesSpoken",
+        label: "Languages Spoken",
+        type: "text",
+        required: false,
+      },
+      {
+        name: "countriesVisited",
+        label: "Countries Visited",
+        type: "text",
+        required: false,
+      },
+      { name: "religion", label: "Religion", type: "text", required: false },
+      {
+        name: "nationality",
+        label: "Nationality",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "changeOfName",
+        label: "Change of Name (if any)",
+        type: "text",
+        required: false,
+      },
+      {
+        name: "changeOfNameDate",
+        label: "Date",
+        type: "date",
+        required: false,
+      },
+      { name: "evidence", label: "Evidence", type: "file", required: false },
     ],
   },
   {
-    title: 'Family background',
+    title: "Family background",
     dynamicFamily: true,
   },
   {
-    title: 'Family Structure',
+    title: "Family Structure",
     fields: [
-      { name: 'fatherWives', label: "Father's Number of Wives", type: 'number', required: true, min: 1 },
-      { name: 'motherPosition', label: "Mother's Position", type: 'select', options: ['First Wife', 'Second Wife', 'Third Wife', 'Fourth Wife'], required: true },
-      { name: 'totalSiblings', label: 'Total Number of Siblings', type: 'number', required: true, min: 0 },
-      { name: 'maleSiblings', label: 'Number of Male Siblings', type: 'number', required: true, min: 0 },
-      { name: 'femaleSiblings', label: 'Number of Female Siblings', type: 'number', required: true, min: 0 },
-      { name: 'positionAmongSiblings', label: 'Position Among Siblings', type: 'select', options: ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Other'], required: true },
-      { name: 'parentsStatus', label: "Parents' Status", type: 'select', options: ['Living Together', 'Living Apart', 'Separated', 'Divorced'], required: true },
+      {
+        name: "fatherWives",
+        label: "Father's Number of Wives",
+        type: "number",
+        required: true,
+        min: 1,
+      },
+      {
+        name: "motherPosition",
+        label: "Mother's Position",
+        type: "select",
+        options: [
+          "First Wife",
+          "Second Wife",
+          "Third Wife",
+          "Fourth Wife",
+          "other",
+        ],
+        required: true,
+      },
+      {
+        name: "totalSiblings",
+        label: "Total Number of Siblings",
+        type: "number",
+        required: true,
+        min: 0,
+      },
+      {
+        name: "maleSiblings",
+        label: "Number of Male Siblings",
+        type: "number",
+        required: true,
+        min: 0,
+      },
+      {
+        name: "femaleSiblings",
+        label: "Number of Female Siblings",
+        type: "number",
+        required: true,
+        min: 0,
+      },
+      {
+        name: "positionAmongSiblings",
+        label: "Position Among Siblings",
+        type: "number",
+        min: 1,
+        required: true,
+      },
+      {
+        name: "parentsStatus",
+        label: "Parents' Status",
+        type: "select",
+        options: ["Living Together", "Living Apart", "Separated", "Divorced"],
+        required: true,
+      },
     ],
   },
   {
-    title: 'Educational Background',
+    title: "Educational Background",
     dynamicEducation: true,
   },
   {
-    title: 'Additional Information',
+    title: "Additional Information",
     fields: [
-      { name: 'additional_info', label: 'Additional Information', type: 'textarea', required: false },
+      {
+        name: "additional_info",
+        label: "Additional Information",
+        type: "textarea",
+        required: false,
+      },
     ],
   },
 ];
 
 const familyRoles = [
-  { key: 'father', label: 'Father' },
-  { key: 'mother', label: 'Mother' },
-  { key: 'guardian', label: 'Guardian' },
+  { key: "father", label: "Father" },
+  { key: "mother", label: "Mother" },
+  { key: "guardian", label: "Guardian" },
 ];
 
 const familyFields = [
-  { suffix: 'Name', label: 'Name', type: 'text', required: true },
-  { suffix: 'ContactAddress', label: 'Contact Address', type: 'text', required: true },
-  { suffix: 'ResidentialAddress', label: 'Residential Address', type: 'text', required: true },
-  { suffix: 'Phone', label: 'Phone', type: 'text', required: true },
-  { suffix: 'State', label: 'State', type: 'text', required: true },
-  { suffix: 'Nationality', label: 'Nationality', type: 'text', required: true },
-  { suffix: 'Religion', label: 'Religion', type: 'text', required: true },
-  { suffix: 'EducationLevel', label: 'Education Level', type: 'text', required: true },
-  { suffix: 'Occupation', label: 'Occupation', type: 'text', required: true },
-  { suffix: 'Deceased', label: 'Deceased?', type: 'select', options: ['Yes', 'No'], required: true },
-  { suffix: 'Dob', label: 'Date of Birth', type: 'date', required: true },
+  { suffix: "Name", label: "Name", type: "text", required: true },
+  {
+    suffix: "ContactAddress",
+    label: "Contact Address",
+    type: "text",
+    required: true,
+  },
+  {
+    suffix: "ResidentialAddress",
+    label: "Residential Address",
+    type: "text",
+    required: true,
+  },
+  { suffix: "Phone", label: "Phone", type: "text", required: true },
+  { suffix: "State", label: "State", type: "text", required: true },
+  { suffix: "Nationality", label: "Nationality", type: "text", required: true },
+  { suffix: "Religion", label: "Religion", type: "text", required: true },
+  {
+    suffix: "EducationLevel",
+    label: "Education Level",
+    type: "text",
+    required: true,
+  },
+  { suffix: "Occupation", label: "Occupation", type: "text", required: true },
+  {
+    suffix: "Deceased",
+    label: "Deceased?",
+    type: "select",
+    options: ["Yes", "No"],
+    required: true,
+  },
+  { suffix: "Dob", label: "Date of Birth", type: "date", required: true },
 ];
 
 const educationLevels = [
-  { key: 'primary', label: 'Primary School' },
-  { key: 'junior', label: 'Junior Secondary School' },
-  { key: 'senior', label: 'Senior Secondary School' },
+  { key: "primary", label: "Primary School" },
+  { key: "junior", label: "Junior Secondary School" },
+  { key: "senior", label: "Senior Secondary School" },
 ];
 
 const educationFields = [
-  { suffix: 'SchoolName', label: 'School Name', type: 'text' },
-  { suffix: 'AdmissionYear', label: 'Year of Admission', type: 'number' },
-  { suffix: 'GraduationYear', label: 'Year of Graduation', type: 'number' },
-  { suffix: 'LeavingReason', label: 'Reason for Leaving', type: 'text' },
-  { suffix: 'CertificateNumber', label: 'Certificate Number', type: 'text' },
+  { suffix: "SchoolName", label: "School Name", type: "text" },
+  { suffix: "AdmissionYear", label: "Year of Admission", type: "number" },
+  { suffix: "GraduationYear", label: "Year of Graduation", type: "number" },
+  { suffix: "LeavingReason", label: "Reason for Leaving", type: "text" },
+  { suffix: "CertificateNumber", label: "Certificate Number", type: "text" },
 ];
 
 export default function ProfileAssessmentForm() {
   const [step, setStep] = useState(0);
-  const [activeRoles, setActiveRoles] = useState(['father']);
-  const [activeEducationLevels, setActiveEducationLevels] = useState(['primary']);
-  const [familyError, setFamilyError] = useState('');
-  const [educationError, setEducationError] = useState('');
-  
+  const [activeRoles, setActiveRoles] = useState(["father"]);
+  const [activeEducationLevels, setActiveEducationLevels] = useState([
+    "primary",
+  ]);
+  const [familyError, setFamilyError] = useState("");
+  const [educationError, setEducationError] = useState("");
+
   const {
     loading,
     error,
@@ -115,7 +263,7 @@ export default function ProfileAssessmentForm() {
     watch,
     getValues,
     reset,
-  } = useForm({ mode: 'onTouched' });
+  } = useForm({ mode: "onTouched" });
 
   // Set form values when profile data is loaded
   useEffect(() => {
@@ -128,8 +276,13 @@ export default function ProfileAssessmentForm() {
       }
 
       // Set family background
-      if (profileData.familyBackground && profileData.familyBackground.length > 0) {
-        const roles = profileData.familyBackground.map(member => member.relationship);
+      if (
+        profileData.familyBackground &&
+        profileData.familyBackground.length > 0
+      ) {
+        const roles = profileData.familyBackground.map(
+          (member) => member.relationship
+        );
         setActiveRoles(roles);
         profileData.familyBackground.forEach((member, index) => {
           Object.entries(member).forEach(([key, value]) => {
@@ -146,8 +299,13 @@ export default function ProfileAssessmentForm() {
       }
 
       // Set educational background
-      if (profileData.educationalBackground && profileData.educationalBackground.length > 0) {
-        const levels = profileData.educationalBackground.map(edu => edu.level);
+      if (
+        profileData.educationalBackground &&
+        profileData.educationalBackground.length > 0
+      ) {
+        const levels = profileData.educationalBackground.map(
+          (edu) => edu.level
+        );
         setActiveEducationLevels(levels);
         profileData.educationalBackground.forEach((edu, index) => {
           Object.entries(edu).forEach(([key, value]) => {
@@ -158,7 +316,7 @@ export default function ProfileAssessmentForm() {
 
       // Set notes
       if (profileData.notes) {
-        setValue('additional_info', profileData.notes);
+        setValue("additional_info", profileData.notes);
       }
     }
   }, [profileData, setValue]);
@@ -173,8 +331,25 @@ export default function ProfileAssessmentForm() {
           await updateFamilyBackground(data);
           break;
         case 2:
-          await updateFamilyStructure(data);
+          const parsedData = { ...data };
+
+          const numberFields = [
+            "fatherWives",
+            "totalSiblings",
+            "maleSiblings",
+            "femaleSiblings",
+            "positionAmongSiblings",
+          ];
+
+          numberFields.forEach((key) => {
+            if (parsedData[key] !== undefined && parsedData[key] !== "") {
+              parsedData[key] = Number(parsedData[key]);
+            }
+          });
+
+          await updateFamilyStructure(parsedData);
           break;
+
         case 3:
           await updateEducationalBackground(data);
           break;
@@ -192,35 +367,38 @@ export default function ProfileAssessmentForm() {
   const onNext = async () => {
     if (steps[step].dynamicFamily) {
       const values = getValues();
-      const hasAtLeastOne = activeRoles.some(role => values[`${role}_name`] && values[`${role}_name`].trim() !== '');
+      const hasAtLeastOne = activeRoles.some(
+        (role) => values[`${role}_name`] && values[`${role}_name`].trim() !== ""
+      );
       // if (!hasAtLeastOne) {
       //   setFamilyError('Please fill at least one family member name.');
       //   return;
       // }
-      setFamilyError('');
+      setFamilyError("");
     }
-    
+
     if (steps[step].dynamicEducation) {
       const values = getValues();
-      const hasPrimarySchool = activeEducationLevels.includes('primary') && 
-        values['primary_school_name'] && 
-        values['primary_school_name'].trim() !== '';
-      
+      const hasPrimarySchool =
+        activeEducationLevels.includes("primary") &&
+        values["primary_school_name"] &&
+        values["primary_school_name"].trim() !== "";
+
       if (!hasPrimarySchool) {
-        setEducationError('Please fill in the Primary School information.');
+        setEducationError("Please fill in the Primary School information.");
         return;
       }
-      setEducationError('');
+      setEducationError("");
     }
 
     try {
       const data = getValues();
       await onSave(data);
 
-    if (step === steps.length - 1) {
-        toast.success('Profile assessment completed successfully!');
-    } else {
-      setStep((s) => Math.min(steps.length - 1, s + 1));
+      if (step === steps.length - 1) {
+        toast.success("Profile assessment completed successfully!");
+      } else {
+        setStep((s) => Math.min(steps.length - 1, s + 1));
       }
     } catch (error) {
       console.error("Error proceeding to next step:", error);
@@ -236,7 +414,7 @@ export default function ProfileAssessmentForm() {
   };
 
   const toggleEducationLevel = (level) => {
-    if (level === 'primary') return;
+    if (level === "primary") return;
     setActiveEducationLevels((prev) =>
       prev.includes(level) ? prev.filter((l) => l !== level) : [...prev, level]
     );
@@ -525,4 +703,4 @@ export default function ProfileAssessmentForm() {
       </div>
     </div>
   );
-} 
+}
