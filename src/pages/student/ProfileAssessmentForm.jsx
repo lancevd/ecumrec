@@ -394,7 +394,7 @@ export default function ProfileAssessmentForm() {
 
     try {
       const data = getValues();
-      await onSave(data);
+      // await onSave(data);
 
       if (step === steps.length - 1) {
         toast.success("Profile assessment completed successfully!");
