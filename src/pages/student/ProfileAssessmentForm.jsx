@@ -377,14 +377,14 @@ export default function ProfileAssessmentForm() {
       // }
       setFamilyError("");
     }
-
+    
     if (steps[step].dynamicEducation) {
       const values = getValues();
       const hasPrimarySchool =
         activeEducationLevels.includes("primary") &&
         values["primarySchoolName"] &&
         values["primarySchoolName"].trim() !== "";
-
+      
       if (!hasPrimarySchool) {
         setEducationError("Please fill in the Primary School information.");
         return;
@@ -396,10 +396,10 @@ export default function ProfileAssessmentForm() {
       const data = getValues();
       // await onSave(data);
 
-      if (step === steps.length - 1) {
+    if (step === steps.length - 1) {
         toast.success("Profile assessment completed successfully!");
-      } else {
-        setStep((s) => Math.min(steps.length - 1, s + 1));
+    } else {
+      setStep((s) => Math.min(steps.length - 1, s + 1));
       }
     } catch (error) {
       console.error("Error proceeding to next step:", error);
@@ -512,7 +512,10 @@ export default function ProfileAssessmentForm() {
                                 {...register(fieldName, {
                                   required: field.required,
                                 })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85]"
+                                disabled={!editing}
+                                className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85] ${
+                                  !editing ? "bg-gray-100 text-gray-500" : ""
+                                }`}
                               >
                                 <option value="">Select</option>
                                 {field.options.map((opt) => (
@@ -528,7 +531,10 @@ export default function ProfileAssessmentForm() {
                                 {...register(fieldName, {
                                   required: field.required,
                                 })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85]"
+                                disabled={!editing}
+                                className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85] ${
+                                  !editing ? "bg-gray-100 text-gray-500" : ""
+                                }`}
                               />
                             )}
                             {errors[fieldName] && (
@@ -591,7 +597,10 @@ export default function ProfileAssessmentForm() {
                               {...register(fieldName, {
                                 required: field.suffix !== "certificate_number",
                               })}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85]"
+                              disabled={!editing}
+                              className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85] ${
+                                !editing ? "bg-gray-100 text-gray-500" : ""
+                              }`}
                             />
                             {errors[fieldName] && (
                               <span className="text-xs text-red-500">
@@ -627,13 +636,19 @@ export default function ProfileAssessmentForm() {
                       <textarea
                         id={field.name}
                         {...register(field.name, { required: field.required })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85] min-h-[100px]"
+                        disabled={!editing}
+                        className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85] min-h-[100px] ${
+                          !editing ? "bg-gray-100 text-gray-500" : ""
+                        }`}
                       />
                     ) : field.type === "select" ? (
                       <select
                         id={field.name}
                         {...register(field.name, { required: field.required })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85]"
+                        disabled={!editing}
+                        className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85] ${
+                          !editing ? "bg-gray-100 text-gray-500" : ""
+                        }`}
                       >
                         <option value="">Select</option>
                         {field.options.map((opt) => (
@@ -646,7 +661,10 @@ export default function ProfileAssessmentForm() {
                       <input
                         id={field.name}
                         type="file"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85]"
+                        disabled={!editing}
+                        className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85] ${
+                          !editing ? "bg-gray-100 text-gray-500" : ""
+                        }`}
                         onChange={(e) =>
                           setValue(field.name, e.target.files[0])
                         }
@@ -656,7 +674,10 @@ export default function ProfileAssessmentForm() {
                         id={field.name}
                         type={field.type}
                         {...register(field.name, { required: field.required })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85]"
+                        disabled={!editing}
+                        className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85] ${
+                          !editing ? "bg-gray-100 text-gray-500" : ""
+                        }`}
                       />
                     )}
                     {errors[field.name] && (
@@ -670,14 +691,14 @@ export default function ProfileAssessmentForm() {
             )}
             <div className="flex justify-between mt-8">
               <div className="flex gap-4">
-                <button
-                  type="button"
-                  onClick={onPrev}
+              <button
+                type="button"
+                onClick={onPrev}
                   disabled={step === 0 || loading}
-                  className="px-3 md:px-6 py-2 rounded-lg font-semibold border border-gray-300 text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50"
-                >
-                  Previous
-                </button>
+                className="px-3 md:px-6 py-2 rounded-lg font-semibold border border-gray-300 text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50"
+              >
+                Previous
+              </button>
                 <button
                   type="button"
                   onClick={() => setEditing(!editing)}
@@ -689,7 +710,7 @@ export default function ProfileAssessmentForm() {
               <div className="flex gap-4">
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || !editing}
                   className="px-3 md:px-6 py-2 rounded-lg font-semibold bg-[#184C85] text-white hover:bg-[#123a69] transition disabled:opacity-50"
                 >
                   {loading ? "Saving..." : "Save"}
@@ -713,4 +734,4 @@ export default function ProfileAssessmentForm() {
       </div>
     </div>
   );
-}
+} 
