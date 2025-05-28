@@ -8,7 +8,7 @@ const GeneralContext = createContext();
 export const useGeneralContext = () => {
   const context = useContext(GeneralContext);
   if (!context) {
-    throw new Error("useGeneralContext must be used within an GeneralContextProvider");
+    throw new Error("useGeneralContext must be used within a GeneralContextProvider");
   }
   return context;
 };
@@ -18,7 +18,7 @@ export const GeneralContextProvider = ({ children }) => {
 
   const value = {
     loading,
-    setLoading
+    setLoading,
   };
 
   return <GeneralContext.Provider value={value}>{children}</GeneralContext.Provider>;

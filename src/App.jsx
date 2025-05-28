@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -38,10 +43,12 @@ import Students from "./pages/admin/Students";
 import Counselors from "./pages/admin/Counselors";
 import CreateUser from "./pages/admin/CreateUser";
 import AdminLayout from "./layouts/AdminLayout";
+import { GeneralContextProvider } from "./context/GeneralContext";
 
 function App() {
   return (
     <AuthProvider>
+      <GeneralContextProvider>
         <Toaster position="top-right" />
         <main className="h-screen">
           <Routes>
@@ -57,13 +64,31 @@ function App() {
             <Route element={<ProtectedRoute allowedRoles={["staff"]} />}>
               <Route element={<CounselorLayout />}>
                 <Route path="/counselor" element={<CounselorDashboard />} />
-                <Route path="/counselor/students" element={<StudentDirectory />} />
-                <Route path="/counselor/students/:id" element={<StudentProfile />} />
-                <Route path="/counselor/new-assessment" element={<NewAssessment />} />
-                <Route path="/counselor/assessment-queue" element={<AssessmentQueue />} />
-                <Route path="/counselor/appointments" element={<Appointments />} />
+                <Route
+                  path="/counselor/students"
+                  element={<StudentDirectory />}
+                />
+                <Route
+                  path="/counselor/students/:id"
+                  element={<StudentProfile />}
+                />
+                <Route
+                  path="/counselor/new-assessment"
+                  element={<NewAssessment />}
+                />
+                <Route
+                  path="/counselor/assessment-queue"
+                  element={<AssessmentQueue />}
+                />
+                <Route
+                  path="/counselor/appointments"
+                  element={<Appointments />}
+                />
                 <Route path="/counselor/analytics" element={<Analytics />} />
-                <Route path="/counselor/resources" element={<ResourcesLibrary />} />
+                <Route
+                  path="/counselor/resources"
+                  element={<ResourcesLibrary />}
+                />
                 <Route path="/counselor/settings" element={<Settings />} />
               </Route>
             </Route>
@@ -72,7 +97,10 @@ function App() {
             <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
               <Route element={<StudentLayout />}>
                 <Route path="/student" element={<StudentDashboard />} />
-                <Route path="/student/assessments" element={<MyAssessments />} />
+                <Route
+                  path="/student/assessments"
+                  element={<MyAssessments />}
+                />
                 <Route path="/student/schedule" element={<Schedule />} />
                 <Route path="/student/resources" element={<Resources />} />
                 <Route path="/student/progress" element={<ProgressTracker />} />
@@ -92,11 +120,12 @@ function App() {
 
             {/* Redirect root to login */}
             <Route path="/" element={<Navigate to="/login" replace />} />
-            
+
             {/* Catch all route - redirect to login */}
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
         </main>
+      </GeneralContextProvider>
     </AuthProvider>
   );
 }
