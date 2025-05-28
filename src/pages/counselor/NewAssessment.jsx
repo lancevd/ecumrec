@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-// import { getStudentProfile } from "../../services/studentProfileService";
+// import {lgetStudentProfile } from "../../services/studentProfileService";
 import { useAuth } from "../../context/AuthContext";
 import { useSchoolData } from "../../api/counselors/useGetSchoolStudents";
 import Spinner from "../../components/Spinner";
@@ -12,7 +12,7 @@ export default function NewAssessment() {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const { user } = useAuth();
-  const {getSchoolStudents} = useSchoolData();
+  const { getSchoolStudents, getStudentProfile } = useSchoolData();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,13 +34,13 @@ export default function NewAssessment() {
   }, [user.schoolId]);
 
   const handleStudentSelect = async (studentId) => {
-    // try {
-    //   // const response = await getStudentProfile(studentId);
-    //   setSelectedStudent(response.data);
-    //   setShowProfileModal(true);
-    // } catch (error) {
-    //   toast.error("Error fetching student profile", "error");
-    // }
+    try {
+      const response = await getStudentProfile(studentId);
+      setSelectedStudent(response.data.data);
+      setShowProfileModal(true);
+    } catch (error) {
+      toast.error("Error fetching student profile", "error");
+    }
   };
 
   const handleStartAssessment = () => {

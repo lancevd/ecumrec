@@ -11,7 +11,7 @@ export const useSchoolData = () => {
     try {
       setLoading(true);
       const response = await axiosInstance.get(
-        `/users/students/${user.schoolId}`
+        `/users/schools/${user.schoolId}/students`
       );
       return response;
     } catch (error) {
@@ -22,5 +22,20 @@ export const useSchoolData = () => {
     }
   };
 
-  return { getSchoolStudents, loading };
+  const getStudentProfile = async (studentId) => {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.get(
+        `/users/schools/${user.schoolId}/students/${studentId}`
+      );
+      return response;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Error fetching students");
+      return error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { getSchoolStudents, getStudentProfile, loading };
 };

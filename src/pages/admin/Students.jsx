@@ -18,7 +18,7 @@ const Students = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await axiosInstance.get(`/users/students/${user.id}`);
+        const response = await axiosInstance.get(`/users/schools/${user.id}/students`);
         setStudents(response.data.data);
       } catch (error) {
         toast.error(error.response?.data?.message || "Error fetching students");
