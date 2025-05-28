@@ -7,7 +7,7 @@ const steps = [
   {
     title: "Student's personal data",
     fields: [
-      { name: "surname", label: "Surname", type: "text", required: true },
+      { name: "lastName", label: "Surname", type: "text", required: true },
       { name: "firstName", label: "First Name", type: "text", required: true },
       {
         name: "gender",
@@ -243,7 +243,7 @@ export default function ProfileAssessmentForm() {
   ]);
   const [familyError, setFamilyError] = useState("");
   const [educationError, setEducationError] = useState("");
-  const [editing, setEditing]= useState(false)
+  const [editing, setEditing] = useState(false);
 
   const {
     loading,
@@ -268,56 +268,101 @@ export default function ProfileAssessmentForm() {
 
   // Set form values when profile data is loaded
   useEffect(() => {
-    if (profileData) {
-      // Set personal data
-      if (profileData.personalData) {
-        Object.entries(profileData.personalData).forEach(([key, value]) => {
-          setValue(key, value);
+    if (profileData?.data) {
+      const data = profileData.data;
+      console.log("Profile Data:", data);
+
+      // Personal Data
+      if (data.personalData) {
+        Object.entries(data.personalData).forEach(([key, value]) => {
+          if (value !== null && value !== undefined) {
+            setValue(key, value);
+          }
         });
       }
 
-      // Set family background
-      if (
-        profileData.familyBackground &&
-        profileData.familyBackground.length > 0
-      ) {
-        const roles = profileData.familyBackground.map(
-          (member) => member.relationship
-        );
+      // Family Background
+      if (data.familyBackground) {
+        const roles = [];
+        
+        if (data.familyBackground.father?.name) {
+          roles.push("father");
+          Object.entries(data.familyBackground.father).forEach(([key, value]) => {
+            if (value !== null && value !== undefined) {
+              setValue(`father${key.charAt(0).toUpperCase() + key.slice(1)}`, value);
+            }
+          });
+        }
+
+        if (data.familyBackground.mother?.name) {
+          roles.push("mother");
+          Object.entries(data.familyBackground.mother).forEach(([key, value]) => {
+            if (value !== null && value !== undefined) {
+              setValue(`mother${key.charAt(0).toUpperCase() + key.slice(1)}`, value);
+            }
+          });
+        }
+
+        if (data.familyBackground.guardian?.name) {
+          roles.push("guardian");
+          Object.entries(data.familyBackground.guardian).forEach(([key, value]) => {
+            if (value !== null && value !== undefined) {
+              setValue(`guardian${key.charAt(0).toUpperCase() + key.slice(1)}`, value);
+            }
+          });
+        }
+
         setActiveRoles(roles);
-        profileData.familyBackground.forEach((member, index) => {
-          Object.entries(member).forEach(([key, value]) => {
-            setValue(`${member.relationship}_${key}`, value);
+      }
+
+      // Family Structure
+      if (data.familyStructure) {
+        Object.entries(data.familyStructure).forEach(([key, value]) => {
+          if (value !== null && value !== undefined && !['completed', '_id', 'createdAt', 'updatedAt', 'siblings'].includes(key)) {
+            setValue(key, value);
+          }
+        });
+      }
+
+      // Educational Background
+      if (data.educationalBackground) {
+        const levels = [];
+
+        if (data.educationalBackground.schools?.primarySchoolName) {
+          levels.push("primary");
+          Object.entries(data.educationalBackground.schools).forEach(([key, value]) => {
+            if (key.startsWith('primary') && value !== null && value !== undefined) {
+              setValue(key, value);
+            }
           });
-        });
-      }
+        }
 
-      // Set family structure
-      if (profileData.familyStructure) {
-        Object.entries(profileData.familyStructure).forEach(([key, value]) => {
-          setValue(key, value);
-        });
-      }
+        if (data.educationalBackground.schools?.juniorSecondarySchoolName) {
+          levels.push("junior");
+          Object.entries(data.educationalBackground.schools).forEach(([key, value]) => {
+            if (key.startsWith('juniorSecondary') && value !== null && value !== undefined) {
+              const newKey = key.replace('juniorSecondary', 'junior');
+              setValue(newKey, value);
+            }
+          });
+        }
 
-      // Set educational background
-      if (
-        profileData.educationalBackground &&
-        profileData.educationalBackground.length > 0
-      ) {
-        const levels = profileData.educationalBackground.map(
-          (edu) => edu.level
-        );
+        if (data.educationalBackground.schools?.seniorSecondarySchoolName) {
+          levels.push("senior");
+          Object.entries(data.educationalBackground.schools).forEach(([key, value]) => {
+            if (key.startsWith('seniorSecondary') && value !== null && value !== undefined) {
+              const newKey = key.replace('seniorSecondary', 'senior');
+              setValue(newKey, value);
+            }
+          });
+        }
+
         setActiveEducationLevels(levels);
-        profileData.educationalBackground.forEach((edu, index) => {
-          Object.entries(edu).forEach(([key, value]) => {
-            setValue(`${edu.level}${key}`, value);
-          });
-        });
       }
 
-      // Set notes
-      if (profileData.notes) {
-        setValue("additional_info", profileData.notes);
+      // Notes
+      if (data.notes) {
+        setValue("notes", data.notes);
       }
     }
   }, [profileData, setValue]);
@@ -377,14 +422,14 @@ export default function ProfileAssessmentForm() {
       // }
       setFamilyError("");
     }
-    
+
     if (steps[step].dynamicEducation) {
       const values = getValues();
       const hasPrimarySchool =
         activeEducationLevels.includes("primary") &&
         values["primarySchoolName"] &&
         values["primarySchoolName"].trim() !== "";
-      
+
       if (!hasPrimarySchool) {
         setEducationError("Please fill in the Primary School information.");
         return;
@@ -396,10 +441,10 @@ export default function ProfileAssessmentForm() {
       const data = getValues();
       // await onSave(data);
 
-    if (step === steps.length - 1) {
+      if (step === steps.length - 1) {
         toast.success("Profile assessment completed successfully!");
-    } else {
-      setStep((s) => Math.min(steps.length - 1, s + 1));
+      } else {
+        setStep((s) => Math.min(steps.length - 1, s + 1));
       }
     } catch (error) {
       console.error("Error proceeding to next step:", error);
@@ -691,14 +736,14 @@ export default function ProfileAssessmentForm() {
             )}
             <div className="flex justify-between mt-8">
               <div className="flex gap-4">
-              <button
-                type="button"
-                onClick={onPrev}
+                <button
+                  type="button"
+                  onClick={onPrev}
                   disabled={step === 0 || loading}
-                className="px-3 md:px-6 py-2 rounded-lg font-semibold border border-gray-300 text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50"
-              >
-                Previous
-              </button>
+                  className="px-3 md:px-6 py-2 rounded-lg font-semibold border border-gray-300 text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50"
+                >
+                  Previous
+                </button>
                 <button
                   type="button"
                   onClick={() => setEditing(!editing)}
@@ -734,4 +779,4 @@ export default function ProfileAssessmentForm() {
       </div>
     </div>
   );
-} 
+}
