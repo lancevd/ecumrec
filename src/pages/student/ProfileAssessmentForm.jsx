@@ -330,31 +330,49 @@ export default function ProfileAssessmentForm() {
 
         if (data.educationalBackground.schools?.primarySchoolName) {
           levels.push("primary");
-          Object.entries(data.educationalBackground.schools).forEach(([key, value]) => {
-            if (key.startsWith('primary') && value !== null && value !== undefined) {
-              setValue(key, value);
+          Object.entries(data.educationalBackground.schools).forEach(
+            ([key, value]) => {
+              if (
+                key.startsWith("primary") &&
+                value !== null &&
+                value !== undefined
+              ) {
+                setValue(key, value);
+              }
             }
-          });
+          );
         }
 
         if (data.educationalBackground.schools?.juniorSecondarySchoolName) {
           levels.push("junior");
-          Object.entries(data.educationalBackground.schools).forEach(([key, value]) => {
-            if (key.startsWith('juniorSecondary') && value !== null && value !== undefined) {
-              const newKey = key.replace('juniorSecondary', 'junior');
-              setValue(newKey, value);
+          Object.entries(data.educationalBackground.schools).forEach(
+            ([key, value]) => {
+              if (
+                key.startsWith("juniorSecondary") &&
+                value !== null &&
+                value !== undefined
+              ) {
+                const newKey = key.replace("juniorSecondary", "junior");
+                setValue(newKey, value);
+              }
             }
-          });
+          );
         }
 
         if (data.educationalBackground.schools?.seniorSecondarySchoolName) {
           levels.push("senior");
-          Object.entries(data.educationalBackground.schools).forEach(([key, value]) => {
-            if (key.startsWith('seniorSecondary') && value !== null && value !== undefined) {
-              const newKey = key.replace('seniorSecondary', 'senior');
-              setValue(newKey, value);
+          Object.entries(data.educationalBackground.schools).forEach(
+            ([key, value]) => {
+              if (
+                key.startsWith("seniorSecondary") &&
+                value !== null &&
+                value !== undefined
+              ) {
+                const newKey = key.replace("seniorSecondary", "senior");
+                setValue(newKey, value);
+              }
             }
-          });
+          );
         }
 
         setActiveEducationLevels(levels);
@@ -601,6 +619,7 @@ export default function ProfileAssessmentForm() {
                     <button
                       type="button"
                       key={key}
+                      disabled={!editing}
                       onClick={() => toggleEducationLevel(key)}
                       className={`px-4 py-2 rounded-lg font-semibold border ${
                         activeEducationLevels.includes(key)
@@ -643,9 +662,7 @@ export default function ProfileAssessmentForm() {
                                 required: field.suffix !== "certificate_number",
                               })}
                               disabled={!editing}
-                              className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85] ${
-                                !editing ? "bg-gray-100 text-gray-500" : ""
-                              }`}
+                              className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85] ${!editing ? "bg-gray-100 text-gray-500" : ""}`}
                             />
                             {errors[fieldName] && (
                               <span className="text-xs text-red-500">

@@ -11,7 +11,7 @@ export const useSchoolData = () => {
     try {
       setLoading(true);
       const response = await axiosInstance.get(
-        `/users/schools/${user.schoolId}/students`
+        `/users/counselor/${user.id}/schools/${user.schoolId}/students`
       );
       return response;
     } catch (error) {
@@ -26,7 +26,7 @@ export const useSchoolData = () => {
     try {
       setLoading(true);
       const response = await axiosInstance.get(
-        `/users/schools/${user.schoolId}/students/${studentId}`
+        `/users/counselor/${user.id}/schools/${user.schoolId}/students/${studentId}`
       );
       return response;
     } catch (error) {
