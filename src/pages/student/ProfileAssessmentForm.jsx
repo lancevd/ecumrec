@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import { useProfileAssessment } from "../../api/useProfileAssessment";
 import toast from "react-hot-toast";
+import { formatDate } from "../../utils/functions";
 
 const steps = [
   {
@@ -218,7 +219,12 @@ const familyFields = [
     options: ["Yes", "No"],
     required: true,
   },
-  { suffix: "Dob", label: "Date of Birth", type: "date", required: true },
+  {
+    suffix: "dateOfBirth",
+    label: "Date of Birth",
+    type: "date",
+    required: true,
+  },
 ];
 
 const educationLevels = [
@@ -276,7 +282,16 @@ export default function ProfileAssessmentForm() {
       if (data.personalData) {
         Object.entries(data.personalData).forEach(([key, value]) => {
           if (value !== null && value !== undefined) {
-            setValue(key, value);
+            // Format date fields
+            if (
+              key.includes("Dob") ||
+              key.includes("dateOfBirth") ||
+              key.includes("Date")
+            ) {
+              setValue(key, formatDate(value));
+            } else {
+              setValue(key, value);
+            }
           }
         });
       }
@@ -284,32 +299,57 @@ export default function ProfileAssessmentForm() {
       // Family Background
       if (data.familyBackground) {
         const roles = [];
-        
+
         if (data.familyBackground.father?.name) {
           roles.push("father");
-          Object.entries(data.familyBackground.father).forEach(([key, value]) => {
-            if (value !== null && value !== undefined) {
-              setValue(`father${key.charAt(0).toUpperCase() + key.slice(1)}`, value);
+          Object.entries(data.familyBackground.father).forEach(
+            ([key, value]) => {
+              if (value !== null && value !== undefined) {
+                setValue(
+                  `father${key.charAt(0).toUpperCase() + key.slice(1)}`,
+                  value
+                );
+              }
             }
-          });
+          );
         }
 
         if (data.familyBackground.mother?.name) {
           roles.push("mother");
-          Object.entries(data.familyBackground.mother).forEach(([key, value]) => {
-            if (value !== null && value !== undefined) {
-              setValue(`mother${key.charAt(0).toUpperCase() + key.slice(1)}`, value);
+          Object.entries(data.familyBackground.mother).forEach(
+            ([key, value]) => {
+              if (value !== null && value !== undefined) {
+                setValue(
+                  `mother${key.charAt(0).toUpperCase() + key.slice(1)}`,
+                  value
+                );
+              }
             }
-          });
+          );
         }
 
         if (data.familyBackground.guardian?.name) {
           roles.push("guardian");
-          Object.entries(data.familyBackground.guardian).forEach(([key, value]) => {
-            if (value !== null && value !== undefined) {
-              setValue(`guardian${key.charAt(0).toUpperCase() + key.slice(1)}`, value);
+          Object.entries(data.familyBackground.guardian).forEach(
+            ([key, value]) => {
+              if (value !== null && value !== undefined) {
+                // Format date fields
+                if (
+                  key.includes("Dob") ||
+                  key.includes("dateOfBirth") ||
+                  key.includes("Date")
+                ) {
+                  setValue(key, formatDate(value));
+                } else {
+                  // setValue(key, value);
+                  setValue(
+                  `guardian${key.charAt(0).toUpperCase() + key.slice(1)}`,
+                  value
+                );
+                }
+              } 
             }
-          });
+          );
         }
 
         setActiveRoles(roles);
@@ -318,8 +358,27 @@ export default function ProfileAssessmentForm() {
       // Family Structure
       if (data.familyStructure) {
         Object.entries(data.familyStructure).forEach(([key, value]) => {
-          if (value !== null && value !== undefined && !['completed', '_id', 'createdAt', 'updatedAt', 'siblings'].includes(key)) {
-            setValue(key, value);
+          if (
+            value !== null &&
+            value !== undefined &&
+            ![
+              "completed",
+              "_id",
+              "createdAt",
+              "updatedAt",
+              "siblings",
+            ].includes(key)
+          ) {
+            // Format date fields
+            if (
+              key.includes("Dob") ||
+              key.includes("dateOfBirth") ||
+              key.includes("Date")
+            ) {
+              setValue(key, formatDate(value));
+            } else {
+              setValue(key, value);
+            }
           }
         });
       }
@@ -662,7 +721,9 @@ export default function ProfileAssessmentForm() {
                                 required: field.suffix !== "certificate_number",
                               })}
                               disabled={!editing}
-                              className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85] ${!editing ? "bg-gray-100 text-gray-500" : ""}`}
+                              className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#184C85] ${
+                                !editing ? "bg-gray-100 text-gray-500" : ""
+                              }`}
                             />
                             {errors[fieldName] && (
                               <span className="text-xs text-red-500">
