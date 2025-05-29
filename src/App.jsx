@@ -30,6 +30,7 @@ import Appointments from "./pages/counselor/Appointments";
 import Analytics from "./pages/counselor/Analytics";
 import ResourcesLibrary from "./pages/counselor/ResourcesLibrary";
 import Settings from "./pages/counselor/Settings";
+import AssessmentForm from "./pages/counselor/AssessmentForm";
 
 // Student pages
 import StudentDashboard from "./pages/student/Dashboard";
@@ -79,6 +80,10 @@ function App() {
                 <Route
                   path="/counselor/assessment-queue"
                   element={<AssessmentQueue />}
+                />
+                <Route
+                  path="/counselor/assessment-queue/:id"
+                  element={<AssessmentForm />}
                 />
                 <Route
                   path="/counselor/appointments"

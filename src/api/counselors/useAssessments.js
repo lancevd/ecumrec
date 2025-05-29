@@ -2,10 +2,13 @@ import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 import { axiosInstance } from "../../utils/axiosInstance";
 import { useGeneralContext } from "../../context/GeneralContext";
+import { useState } from "react";
+import axios from "axios";
 
 export const useAssessment = () => {
   const { user } = useAuth();
   const { loading, setLoading } = useGeneralContext();
+  const [error, setError] = useState(null);
 
   const startAssessment = async (data) => {
     try {
@@ -56,5 +59,53 @@ export const useAssessment = () => {
     }
   };
 
-  return { startAssessment, getAssessmentStats, getMyAssessments, loading };
+  const getAssessments = async (page = 1, status = "ongoing") => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`/api/counselors/assessments/${user.id}?page=${page}&status=${status}`);
+      return response.data;
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to fetch assessments");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getAssessment = async (id) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`/api/counselors/assessments/${id}`);
+      return response.data;
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to fetch assessment");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateAssessment = async (id, data) => {
+    try {
+      setLoading(true);
+      const response = await axios.put(`/api/counselors/assessments/${id}`, data);
+      return response.data;
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to update assessment");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    loading,
+    error,
+    startAssessment,
+    getAssessmentStats,
+    getMyAssessments,
+    getAssessments,
+    getAssessment,
+    updateAssessment,
+  };
 };
