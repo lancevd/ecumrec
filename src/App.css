@@ -60,6 +60,7 @@
 
 .btn-secondary:hover {
   background-color: rgba(24, 76, 133, 0.1);
+  color: var(--primary-color);
 }
 
 /* Form styles */

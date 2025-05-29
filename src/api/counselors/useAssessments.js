@@ -22,11 +22,11 @@ export const useAssessment = () => {
     }
   };
 
-  const getAssessmentStats = async (schoolId) => {
+  const getAssessmentStats = async () => {
     try {
       setLoading(true);
       const response = await axiosInstance.get(
-        `/assessments/stats?${schoolId}&${user.id}`
+        `/assessments/stats?${user.schoolId}&${user.id}`
       );
       setLoading(false)
       return response.data.data;
@@ -39,5 +39,22 @@ export const useAssessment = () => {
     }
   };
 
-  return { startAssessment, getAssessmentStats, loading };
+  const getMyAssessments = async (status) => {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.get(
+        `/assessments/counselor/${user.id}?status=${status}&page=1&limit=10`
+      );
+      setLoading(false);
+      return response.data;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Error fetching stats");
+      console.log(error);
+      return error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { startAssessment, getAssessmentStats, getMyAssessments, loading };
 };

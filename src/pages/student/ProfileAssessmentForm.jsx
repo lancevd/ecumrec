@@ -499,14 +499,14 @@ export default function ProfileAssessmentForm() {
       // }
       setFamilyError("");
     }
-
+    
     if (steps[step].dynamicEducation) {
       const values = getValues();
       const hasPrimarySchool =
         activeEducationLevels.includes("primary") &&
         values["primarySchoolName"] &&
         values["primarySchoolName"].trim() !== "";
-
+      
       if (!hasPrimarySchool) {
         setEducationError("Please fill in the Primary School information.");
         return;
@@ -518,10 +518,10 @@ export default function ProfileAssessmentForm() {
       const data = getValues();
       // await onSave(data);
 
-      if (step === steps.length - 1) {
+    if (step === steps.length - 1) {
         toast.success("Profile assessment completed successfully!");
-      } else {
-        setStep((s) => Math.min(steps.length - 1, s + 1));
+    } else {
+      setStep((s) => Math.min(steps.length - 1, s + 1));
       }
     } catch (error) {
       console.error("Error proceeding to next step:", error);
@@ -814,14 +814,14 @@ export default function ProfileAssessmentForm() {
             )}
             <div className="flex justify-between mt-8">
               <div className="flex gap-4">
-                <button
-                  type="button"
-                  onClick={onPrev}
+              <button
+                type="button"
+                onClick={onPrev}
                   disabled={step === 0 || loading}
-                  className="px-3 md:px-6 py-2 rounded-lg font-semibold border border-gray-300 text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50"
-                >
-                  Previous
-                </button>
+                className="px-3 md:px-6 py-2 rounded-lg font-semibold border border-gray-300 text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50"
+              >
+                Previous
+              </button>
                 <button
                   type="button"
                   onClick={() => setEditing(!editing)}
@@ -857,4 +857,4 @@ export default function ProfileAssessmentForm() {
       </div>
     </div>
   );
-}
+} 
