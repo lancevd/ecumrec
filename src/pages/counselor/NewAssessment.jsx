@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 import { useSchoolData } from "../../api/counselors/useGetSchoolStudents";
 import Spinner from "../../components/Spinner";
+import { useAssessment } from "../../api/counselors/useAssessments";
 
 export default function NewAssessment() {
   const [students, setStudents] = useState([]);
@@ -12,6 +13,7 @@ export default function NewAssessment() {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const { user } = useAuth();
   const { getSchoolStudents, getStudentProfile } = useSchoolData();
+  const { startAssessment } = useAssessment();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,9 +42,13 @@ export default function NewAssessment() {
   };
 
   const handleStartAssessment = () => {
-    if (selectedStudent) {
-      navigate(`/counselor/assessment/${selectedStudent._id}`);
-    }
+    const payload = {
+      studentId: selectedStudent._id,
+      schoolId: user.schoolId,
+      counselorId: user.id,
+    };
+    startAssessment(payload);
+    setShowProfileModal(false);
   };
 
   const formatLabel = (key) =>
