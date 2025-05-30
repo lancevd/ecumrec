@@ -50,7 +50,7 @@ export default function AssessmentForm() {
       status: false,
       records: [],
     },
-    standardizedTests: {
+      standardizedTests: {
       status: false,
       tests: [],
     },
@@ -236,6 +236,7 @@ export default function AssessmentForm() {
                 }
               />
             </div>
+            <hr />
             {formData.physicalDisabilities.status && (
               <div className="space-y-4 mt-4">
                 <div className="flex items-center justify-between">
@@ -266,7 +267,70 @@ export default function AssessmentForm() {
                     }
                   />
                 </div>
-                {/* Add other disability switches */}
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-700">
+                    Short Sightedness
+                  </span>
+                  <Switch
+                    enabled={formData.physicalDisabilities.shortSightedness}
+                    onChange={() =>
+                      handleSwitchChange(
+                        "physicalDisabilities",
+                        "shortSightedness"
+                      )
+                    }
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-700">
+                    Long Sightedness
+                  </span>
+                  <Switch
+                    enabled={formData.physicalDisabilities.longSightedness}
+                    onChange={() =>
+                      handleSwitchChange(
+                        "physicalDisabilities",
+                        "longSightedness"
+                      )
+                    }
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-700">
+                    Stammering
+                  </span>
+                  <Switch
+                    enabled={formData.physicalDisabilities.stammering}
+                    onChange={() =>
+                      handleSwitchChange("physicalDisabilities", "stammering")
+                    }
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-700">
+                    Squinting
+                  </span>
+                  <Switch
+                    enabled={formData.physicalDisabilities.squinting}
+                    onChange={() =>
+                      handleSwitchChange("physicalDisabilities", "squinting")
+                    }
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-700">
+                    Physical Impairment
+                  </span>
+                  <Switch
+                    enabled={formData.physicalDisabilities.physicalImpairment}
+                    onChange={() =>
+                      handleSwitchChange(
+                        "physicalDisabilities",
+                        "physicalImpairment"
+                      )
+                    }
+                  />
+                </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Other Disabilities
@@ -280,7 +344,7 @@ export default function AssessmentForm() {
                         e.target.value
                       )
                     }
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                    className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                     rows={3}
                   />
                 </div>
@@ -301,6 +365,7 @@ export default function AssessmentForm() {
                 onChange={() => handleSwitchChange("healthRecords", "status")}
               />
             </div>
+            <hr />
             {formData.healthRecords.status && (
               <div className="space-y-4 mt-4">
                 <div>
@@ -394,9 +459,9 @@ export default function AssessmentForm() {
                         newRecords
                       );
                     }}
-                    className="px-3 py-1 text-sm bg-primary text-white rounded hover:bg-primary/90"
+                    className="px-3 py-1 text-sm bg-primary text-primary rounded hover:bg-primary/90"
                   >
-                    Add Record
+                    Add Record ➕
                   </button>
                 </div>
                 {formData.disciplineRecords.records.map((record, index) => (
@@ -439,7 +504,7 @@ export default function AssessmentForm() {
                             newRecords
                           );
                         }}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                        className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                       />
                     </div>
                     <div>
@@ -459,7 +524,7 @@ export default function AssessmentForm() {
                             newRecords
                           );
                         }}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                        className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                         rows={2}
                       />
                     </div>
@@ -480,7 +545,141 @@ export default function AssessmentForm() {
                             newRecords
                           );
                         }}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                        className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                        rows={2}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+
+      case "standardizedTests":
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-700">
+                Has Taken Test(s)
+              </span>
+              <Switch
+                enabled={formData.standardizedTests.status}
+                onChange={() =>
+                  handleSwitchChange("standardizedTests", "status")
+                }
+              />
+            </div>
+            <hr />
+            {formData.standardizedTests.status && (
+              <div className="space-y-4 mt-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-medium">Tests</h3>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newTests = [...formData.standardizedTests.tests];
+                      newTests.push({
+                        testName: "",
+                        testDescription: "",
+                        score: "",
+                        interpretation,
+                        discussion: "",
+                        date: new Date().toISOString().split("T")[0],
+                      });
+                      handleInputChange(
+                        "standardizedTests",
+                        "records",
+                        newTests
+                      );
+                    }}
+                    className="px-3 py-1 text-sm bg-primary text-primary rounded hover:bg-primary/90"
+                  >
+                    Add Record ➕
+                  </button>
+                </div>
+                {formData.standardizedTests.tests.map((record, index) => (
+                  <div key={index} className="p-4 border rounded-lg space-y-4">
+                    <div className="flex justify-between items-center">
+                      <h4 className="font-medium">Record {index + 1}</h4>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newTests =
+                            formData.standardizedTests.tests.filter(
+                              (_, i) => i !== index
+                            );
+                          handleInputChange(
+                            "standardizedTests",
+                            "tests",
+                            newTests
+                          );
+                        }}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Date
+                      </label>
+                      <input
+                        type="date"
+                        value={record.date}
+                        onChange={(e) => {
+                          const newTests = [
+                            ...formData.standardizedTests.tests,
+                          ];
+                          newTests[index].date = e.target.value;
+                          handleInputChange(
+                            "standardizedTests",
+                            "records",
+                            newTests
+                          );
+                        }}
+                        className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Offence
+                      </label>
+                      <textarea
+                        value={record.offence}
+                        onChange={(e) => {
+                          const newRecords = [
+                            ...formData.standardizedTests.tests,
+                          ];
+                          newRecords[index].offence = e.target.value;
+                          handleInputChange(
+                            "standardizedTests",
+                            "records",
+                            newRecords
+                          );
+                        }}
+                        className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                        rows={2}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Action Taken
+                      </label>
+                      <textarea
+                        value={record.actionTaken}
+                        onChange={(e) => {
+                          const newTests = [
+                            ...formData.standardizedTests.tests,
+                          ];
+                          newTests[index].actionTaken = e.target.value;
+                          handleInputChange(
+                            "standardizedTests",
+                            "records",
+                            newTests
+                          );
+                        }}
+                        className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                         rows={2}
                       />
                     </div>
