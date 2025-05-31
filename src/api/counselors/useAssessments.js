@@ -87,15 +87,17 @@ export const useAssessment = () => {
 
   const updateAssessment = async (id, formData, sectionName) => {
     const data = {
-      ...formData.sectionName,
+      data: formData,
       section: sectionName,
     };
     try {
       setLoading(true);
       const response = await axiosInstance.put(`/assessments/${id}/section`, data);
+      toast.success(response.data.message || "Assessment updated successfully");
       return response.data;
     } catch (err) {
       setError(err.response?.data?.message || "Failed to update assessment");
+      toast.error(err.response?.data?.message || "Error updating assessment");
       throw err;
     } finally {
       setLoading(false);

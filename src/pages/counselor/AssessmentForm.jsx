@@ -11,6 +11,7 @@ import AcademicRecords from "./assessment-form/AcademicRecords";
 import Observations from "./assessment-form/Observations";
 import VocationalInterests from "./assessment-form/VocationalInterests";
 import Remarks from "./assessment-form/Remarks";
+import toast from "react-hot-toast";
 
 const steps = [
   { id: "physicalDevelopment", title: "Physical Development" },
@@ -105,7 +106,6 @@ export default function AssessmentForm() {
 
   useEffect(() => {
     fetchAssessmentData();
-    console.log(formData.physicalDevelopment)
   }, [id]);
 
   const fetchAssessmentData = async () => {
@@ -163,11 +163,8 @@ export default function AssessmentForm() {
 
   const handleSave = async () => {
     try {
-      await updateAssessment(
-        id,
-        formData.steps[currentStep].id,
-        steps[currentStep].id
-      );
+      const currentSection = steps[currentStep].id;
+      await updateAssessment(id, formData[currentSection], currentSection);
       // Show success message or handle as needed
     } catch (err) {
       setError(err.message || "Failed to save assessment");
@@ -285,11 +282,6 @@ export default function AssessmentForm() {
         </div>
       </div>
 
-      {error ? (
-        <p className="text-red-600">
-          {error} <br />{" "}
-        </p>
-      ) : null}
       <div className="bg-[#ececf865] rounded-lg shadow-lg p-6">
         {renderStep()}
       </div>
