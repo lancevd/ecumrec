@@ -57,13 +57,10 @@ const Login = () => {
       localStorage.setItem("user", JSON.stringify(user));
 
       if (response.data.user.role === "admin") {
-        alert("Welcome back, Admin!");
         navigate("/admin");
       } else if (response.data.user.role === "staff") {
-        alert("Welcome back, Counselor!");
         navigate("/counselor");
       } else if (response.data.user.role === "student") {
-        alert("Welcome back, Student!");
         navigate("/student");
       }
       window.location.reload();
