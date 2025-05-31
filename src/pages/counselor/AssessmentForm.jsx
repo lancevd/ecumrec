@@ -2,7 +2,15 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAssessment } from "../../api/counselors/useAssessments";
 import Spinner from "../../components/Spinner";
-import Switch from "../../components/Switch";
+import PhysicalDevelopment from "./assessment-form/PhysicalDevelopment";
+import PhysicalDisabilities from "./assessment-form/PhysicalDisabilities";
+import HealthRecords from "./assessment-form/HealthRecords";
+import DisciplineRecords from "./assessment-form/DisciplineRecords";
+import StandardizedTests from "./assessment-form/StandardizedTests";
+import AcademicRecords from "./assessment-form/AcademicRecords";
+import Observations from "./assessment-form/Observations";
+import VocationalInterests from "./assessment-form/VocationalInterests";
+import Remarks from "./assessment-form/Remarks";
 
 const steps = [
   { id: "physicalDevelopment", title: "Physical Development" },
@@ -50,7 +58,7 @@ export default function AssessmentForm() {
       status: false,
       records: [],
     },
-      standardizedTests: {
+    standardizedTests: {
       status: false,
       tests: [],
     },
@@ -97,6 +105,7 @@ export default function AssessmentForm() {
 
   useEffect(() => {
     fetchAssessmentData();
+    console.log(formData.physicalDevelopment)
   }, [id]);
 
   const fetchAssessmentData = async () => {
@@ -139,7 +148,7 @@ export default function AssessmentForm() {
     } else {
       try {
         await updateAssessment(id, { ...formData, status: "completed" });
-        navigate("/counselor/assessment-queue");
+        // navigate("/counselor/assessment-queue");
       } catch (err) {
         setError(err.message || "Failed to complete assessment");
       }
@@ -154,7 +163,11 @@ export default function AssessmentForm() {
 
   const handleSave = async () => {
     try {
-      await updateAssessment(id, formData);
+      await updateAssessment(
+        id,
+        formData.steps[currentStep].id,
+        steps[currentStep].id
+      );
       // Show success message or handle as needed
     } catch (err) {
       setError(err.message || "Failed to save assessment");
@@ -162,537 +175,85 @@ export default function AssessmentForm() {
   };
 
   const renderStep = () => {
-    const currentSection = steps[currentStep].id;
-
-    switch (currentSection) {
+    switch (steps[currentStep].id) {
       case "physicalDevelopment":
         return (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Height (cm)
-              </label>
-              <input
-                type="number"
-                value={formData.physicalDevelopment.height}
-                onChange={(e) =>
-                  handleInputChange(
-                    "physicalDevelopment",
-                    "height",
-                    e.target.value
-                  )
-                }
-                className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Weight (kg)
-              </label>
-              <input
-                type="number"
-                value={formData.physicalDevelopment.weight}
-                onChange={(e) =>
-                  handleInputChange(
-                    "physicalDevelopment",
-                    "weight",
-                    e.target.value
-                  )
-                }
-                className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Other Features
-              </label>
-              <textarea
-                value={formData.physicalDevelopment.otherFeatures}
-                onChange={(e) =>
-                  handleInputChange(
-                    "physicalDevelopment",
-                    "otherFeatures",
-                    e.target.value
-                  )
-                }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-                rows={3}
-              />
-            </div>
-          </div>
+          <PhysicalDevelopment
+            formData={formData}
+            handleInputChange={handleInputChange}
+          />
         );
 
       case "physicalDisabilities":
         return (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">
-                Has Physical Disabilities
-              </span>
-              <Switch
-                enabled={formData.physicalDisabilities.status}
-                onChange={() =>
-                  handleSwitchChange("physicalDisabilities", "status")
-                }
-              />
-            </div>
-            <hr />
-            {formData.physicalDisabilities.status && (
-              <div className="space-y-4 mt-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">
-                    Partial Deafness
-                  </span>
-                  <Switch
-                    enabled={formData.physicalDisabilities.partialDeafness}
-                    onChange={() =>
-                      handleSwitchChange(
-                        "physicalDisabilities",
-                        "partialDeafness"
-                      )
-                    }
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">
-                    Partial Blindness
-                  </span>
-                  <Switch
-                    enabled={formData.physicalDisabilities.partialBlindness}
-                    onChange={() =>
-                      handleSwitchChange(
-                        "physicalDisabilities",
-                        "partialBlindness"
-                      )
-                    }
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">
-                    Short Sightedness
-                  </span>
-                  <Switch
-                    enabled={formData.physicalDisabilities.shortSightedness}
-                    onChange={() =>
-                      handleSwitchChange(
-                        "physicalDisabilities",
-                        "shortSightedness"
-                      )
-                    }
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">
-                    Long Sightedness
-                  </span>
-                  <Switch
-                    enabled={formData.physicalDisabilities.longSightedness}
-                    onChange={() =>
-                      handleSwitchChange(
-                        "physicalDisabilities",
-                        "longSightedness"
-                      )
-                    }
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">
-                    Stammering
-                  </span>
-                  <Switch
-                    enabled={formData.physicalDisabilities.stammering}
-                    onChange={() =>
-                      handleSwitchChange("physicalDisabilities", "stammering")
-                    }
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">
-                    Squinting
-                  </span>
-                  <Switch
-                    enabled={formData.physicalDisabilities.squinting}
-                    onChange={() =>
-                      handleSwitchChange("physicalDisabilities", "squinting")
-                    }
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">
-                    Physical Impairment
-                  </span>
-                  <Switch
-                    enabled={formData.physicalDisabilities.physicalImpairment}
-                    onChange={() =>
-                      handleSwitchChange(
-                        "physicalDisabilities",
-                        "physicalImpairment"
-                      )
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Other Disabilities
-                  </label>
-                  <textarea
-                    value={formData.physicalDisabilities.other}
-                    onChange={(e) =>
-                      handleInputChange(
-                        "physicalDisabilities",
-                        "other",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-                    rows={3}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
+          <PhysicalDisabilities
+            formData={formData}
+            handleSwitchChange={handleSwitchChange}
+            handleInputChange={handleInputChange}
+          />
         );
 
       case "healthRecords":
         return (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">
-                Has Health Records
-              </span>
-              <Switch
-                enabled={formData.healthRecords.status}
-                onChange={() => handleSwitchChange("healthRecords", "status")}
-              />
-            </div>
-            <hr />
-            {formData.healthRecords.status && (
-              <div className="space-y-4 mt-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Nature of Problem
-                  </label>
-                  <textarea
-                    value={formData.healthRecords.natureOfProblem}
-                    onChange={(e) =>
-                      handleInputChange(
-                        "healthRecords",
-                        "natureOfProblem",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-                    rows={3}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Causes
-                  </label>
-                  <textarea
-                    value={formData.healthRecords.causes}
-                    onChange={(e) =>
-                      handleInputChange(
-                        "healthRecords",
-                        "causes",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-                    rows={3}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Referrals
-                  </label>
-                  <textarea
-                    value={formData.healthRecords.referrals}
-                    onChange={(e) =>
-                      handleInputChange(
-                        "healthRecords",
-                        "referrals",
-                        e.target.value
-                      )
-                    }
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-                    rows={3}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
+          <HealthRecords
+            formData={formData}
+            handleSwitchChange={handleSwitchChange}
+            handleInputChange={handleInputChange}
+          />
         );
 
       case "disciplineRecords":
         return (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">
-                Has Discipline Records
-              </span>
-              <Switch
-                enabled={formData.disciplineRecords.status}
-                onChange={() =>
-                  handleSwitchChange("disciplineRecords", "status")
-                }
-              />
-            </div>
-            {formData.disciplineRecords.status && (
-              <div className="space-y-4 mt-4">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium">Discipline Records</h3>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const newRecords = [
-                        ...formData.disciplineRecords.records,
-                      ];
-                      newRecords.push({
-                        date: new Date().toISOString().split("T")[0],
-                        offence: "",
-                        actionTaken: "",
-                      });
-                      handleInputChange(
-                        "disciplineRecords",
-                        "records",
-                        newRecords
-                      );
-                    }}
-                    className="px-3 py-1 text-sm bg-primary text-primary rounded hover:bg-primary/90"
-                  >
-                    Add Record ➕
-                  </button>
-                </div>
-                {formData.disciplineRecords.records.map((record, index) => (
-                  <div key={index} className="p-4 border rounded-lg space-y-4">
-                    <div className="flex justify-between items-center">
-                      <h4 className="font-medium">Record {index + 1}</h4>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const newRecords =
-                            formData.disciplineRecords.records.filter(
-                              (_, i) => i !== index
-                            );
-                          handleInputChange(
-                            "disciplineRecords",
-                            "records",
-                            newRecords
-                          );
-                        }}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Date
-                      </label>
-                      <input
-                        type="date"
-                        value={record.date}
-                        onChange={(e) => {
-                          const newRecords = [
-                            ...formData.disciplineRecords.records,
-                          ];
-                          newRecords[index].date = e.target.value;
-                          handleInputChange(
-                            "disciplineRecords",
-                            "records",
-                            newRecords
-                          );
-                        }}
-                        className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Offence
-                      </label>
-                      <textarea
-                        value={record.offence}
-                        onChange={(e) => {
-                          const newRecords = [
-                            ...formData.disciplineRecords.records,
-                          ];
-                          newRecords[index].offence = e.target.value;
-                          handleInputChange(
-                            "disciplineRecords",
-                            "records",
-                            newRecords
-                          );
-                        }}
-                        className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-                        rows={2}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Action Taken
-                      </label>
-                      <textarea
-                        value={record.actionTaken}
-                        onChange={(e) => {
-                          const newRecords = [
-                            ...formData.disciplineRecords.records,
-                          ];
-                          newRecords[index].actionTaken = e.target.value;
-                          handleInputChange(
-                            "disciplineRecords",
-                            "records",
-                            newRecords
-                          );
-                        }}
-                        className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-                        rows={2}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <DisciplineRecords
+            formData={formData}
+            handleSwitchChange={handleSwitchChange}
+            handleInputChange={handleInputChange}
+          />
         );
 
       case "standardizedTests":
         return (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">
-                Has Taken Test(s)
-              </span>
-              <Switch
-                enabled={formData.standardizedTests.status}
-                onChange={() =>
-                  handleSwitchChange("standardizedTests", "status")
-                }
-              />
-            </div>
-            <hr />
-            {formData.standardizedTests.status && (
-              <div className="space-y-4 mt-4">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium">Tests</h3>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const newTests = [...formData.standardizedTests.tests];
-                      newTests.push({
-                        testName: "",
-                        testDescription: "",
-                        score: "",
-                        interpretation,
-                        discussion: "",
-                        date: new Date().toISOString().split("T")[0],
-                      });
-                      handleInputChange(
-                        "standardizedTests",
-                        "records",
-                        newTests
-                      );
-                    }}
-                    className="px-3 py-1 text-sm bg-primary text-primary rounded hover:bg-primary/90"
-                  >
-                    Add Record ➕
-                  </button>
-                </div>
-                {formData.standardizedTests.tests.map((record, index) => (
-                  <div key={index} className="p-4 border rounded-lg space-y-4">
-                    <div className="flex justify-between items-center">
-                      <h4 className="font-medium">Record {index + 1}</h4>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const newTests =
-                            formData.standardizedTests.tests.filter(
-                              (_, i) => i !== index
-                            );
-                          handleInputChange(
-                            "standardizedTests",
-                            "tests",
-                            newTests
-                          );
-                        }}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Date
-                      </label>
-                      <input
-                        type="date"
-                        value={record.date}
-                        onChange={(e) => {
-                          const newTests = [
-                            ...formData.standardizedTests.tests,
-                          ];
-                          newTests[index].date = e.target.value;
-                          handleInputChange(
-                            "standardizedTests",
-                            "records",
-                            newTests
-                          );
-                        }}
-                        className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Offence
-                      </label>
-                      <textarea
-                        value={record.offence}
-                        onChange={(e) => {
-                          const newRecords = [
-                            ...formData.standardizedTests.tests,
-                          ];
-                          newRecords[index].offence = e.target.value;
-                          handleInputChange(
-                            "standardizedTests",
-                            "records",
-                            newRecords
-                          );
-                        }}
-                        className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-                        rows={2}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Action Taken
-                      </label>
-                      <textarea
-                        value={record.actionTaken}
-                        onChange={(e) => {
-                          const newTests = [
-                            ...formData.standardizedTests.tests,
-                          ];
-                          newTests[index].actionTaken = e.target.value;
-                          handleInputChange(
-                            "standardizedTests",
-                            "records",
-                            newTests
-                          );
-                        }}
-                        className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-                        rows={2}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <StandardizedTests
+            formData={formData}
+            handleSwitchChange={handleSwitchChange}
+            handleInputChange={handleInputChange}
+          />
         );
 
-      // Add other cases for remaining sections
+      case "academicRecords":
+        return (
+          <AcademicRecords
+            formData={formData}
+            handleSwitchChange={handleSwitchChange}
+            handleInputChange={handleInputChange}
+          />
+        );
+
+      case "observations":
+        return (
+          <Observations
+            formData={formData}
+            handleSwitchChange={handleSwitchChange}
+            handleInputChange={handleInputChange}
+          />
+        );
+
+      case "vocationalInterests":
+        return (
+          <VocationalInterests
+            formData={formData}
+            handleSwitchChange={handleSwitchChange}
+            handleInputChange={handleInputChange}
+          />
+        );
+
+      case "overallRemark":
+        return (
+          <Remarks formData={formData} handleInputChange={handleInputChange} />
+        );
+
       default:
-        return <div>Section under development</div>;
+        return null;
     }
   };
 
@@ -700,20 +261,6 @@ export default function AssessmentForm() {
     return (
       <div className="flex justify-center items-center h-screen">
         <Spinner />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center py-4 text-red-600">
-        {error}
-        <button
-          onClick={() => navigate("/counselor/assessment-queue")}
-          className="block mx-auto mt-4 px-4 py-2 rounded bg-primary text-white"
-        >
-          Return to Queue
-        </button>
       </div>
     );
   }
@@ -738,6 +285,11 @@ export default function AssessmentForm() {
         </div>
       </div>
 
+      {error ? (
+        <p className="text-red-600">
+          {error} <br />{" "}
+        </p>
+      ) : null}
       <div className="bg-[#ececf865] rounded-lg shadow-lg p-6">
         {renderStep()}
       </div>

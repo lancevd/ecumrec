@@ -62,7 +62,7 @@ export const useAssessment = () => {
   const getAssessments = async (page = 1, status = "ongoing") => {
     try {
       setLoading(true);
-      const response = await axios.get(`/api/counselors/assessments/${user.id}?page=${page}&status=${status}`);
+      const response = await axiosInstance.get(`/assessments/${user.id}?page=${page}&status=${status}`);
       return response.data;
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch assessments");
@@ -75,7 +75,7 @@ export const useAssessment = () => {
   const getAssessment = async (id) => {
     try {
       setLoading(true);
-      const response = await axios.get(`/api/counselors/assessments/${id}`);
+      const response = await axiosInstance.get(`/assessments/${id}`);
       return response.data;
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch assessment");
@@ -85,10 +85,14 @@ export const useAssessment = () => {
     }
   };
 
-  const updateAssessment = async (id, data) => {
+  const updateAssessment = async (id, formData, sectionName) => {
+    const data = {
+      ...formData.sectionName,
+      section: sectionName,
+    };
     try {
       setLoading(true);
-      const response = await axios.put(`/api/counselors/assessments/${id}`, data);
+      const response = await axiosInstance.put(`/assessments/${id}/section`, data);
       return response.data;
     } catch (err) {
       setError(err.response?.data?.message || "Failed to update assessment");
