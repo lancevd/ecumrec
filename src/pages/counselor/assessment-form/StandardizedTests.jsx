@@ -24,13 +24,14 @@ export default function StandardizedTests({ formData, handleSwitchChange, handle
                   ...formData.standardizedTests.tests,
                   {
                     testName: "",
-                    description: "",
+                    testDescription: "",
+                    date: "",
                     score: "",
                     interpretation: "",
                   },
                 ])
               }
-              className="px-4 py-2 rounded bg-primary text-white hover:bg-primary/90"
+              className="px-4 py-2 rounded btn-secondary hover:bg-primary/90"
             >
               Add Test
             </button>
@@ -73,19 +74,37 @@ export default function StandardizedTests({ formData, handleSwitchChange, handle
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Description
+                    Test Description
                   </label>
                   <textarea
-                    value={test.description}
+                    value={test.testDescription}
                     onChange={(e) => {
                       const newTests = [...formData.standardizedTests.tests];
                       newTests[index] = {
                         ...test,
-                        description: e.target.value,
+                        testDescription: e.target.value,
                       };
                       handleInputChange("standardizedTests", "tests", newTests);
                     }}
                     rows={3}
+                    className="mt-1 block w-full rounded-md border-gray-300 p-2 shadow-sm sm:text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Date
+                  </label>
+                  <input
+                    type="date"
+                    value={test.date}
+                    onChange={(e) => {
+                      const newTests = [...formData.standardizedTests.tests];
+                      newTests[index] = {
+                        ...test,
+                        date: e.target.value,
+                      };
+                      handleInputChange("standardizedTests", "tests", newTests);
+                    }}
                     className="mt-1 block w-full rounded-md border-gray-300 p-2 shadow-sm sm:text-sm"
                   />
                 </div>

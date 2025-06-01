@@ -10,14 +10,14 @@ export default function Remarks({ formData, handleInputChange }) {
             Overall Remark
           </label>
           <textarea
-            value={formData.overallRemark}
-            onChange={(e) => handleInputChange("overallRemark", e.target.value)}
+            value={formData.overallRemark.remark}
+            onChange={(e) => handleInputChange("overallRemark","remark", e.target.value)}
             rows={6}
             className="mt-1 block w-full rounded-md border-gray-300 p-2 shadow-sm sm:text-sm"
-            placeholder="Provide an overall assessment of the student..."
+            placeholder="Provide an overall assessment of the student with recommendations"
           />
         </div>
-        <div>
+        {/* <div>
           <label className="block text-sm font-medium text-gray-700">
             Recommendations
           </label>
@@ -40,7 +40,7 @@ export default function Remarks({ formData, handleInputChange }) {
             className="mt-1 block w-full rounded-md border-gray-300 p-2 shadow-sm sm:text-sm"
             placeholder="Specify any follow-up actions or interventions needed..."
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

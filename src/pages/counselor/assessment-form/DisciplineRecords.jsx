@@ -28,7 +28,7 @@ export default function DisciplineRecords({
                   { date: "", offence: "", actionTaken: "" },
                 ])
               }
-              className="px-4 py-2 rounded bg-primary text-white hover:bg-primary/90"
+              className="px-4 py-2 rounded btn-secondary hover:bg-primary/90"
             >
               Add Record
             </button>
@@ -58,6 +58,7 @@ export default function DisciplineRecords({
                   <input
                     type="date"
                     value={record.date}
+                    required
                     onChange={(e) => {
                       const newRecords = [
                         ...formData.disciplineRecords.records,
@@ -81,6 +82,7 @@ export default function DisciplineRecords({
                   </label>
                   <textarea
                     value={record.offence}
+                    required
                     onChange={(e) => {
                       const newRecords = [
                         ...formData.disciplineRecords.records,

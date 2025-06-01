@@ -57,7 +57,9 @@ export default function Observations({ formData, handleSwitchChange, handleInput
                     <h3 className="text-sm font-medium text-gray-700">
                       {category.label}
                     </h3>
-                    <p className="text-sm text-gray-500">{category.description}</p>
+                    <p className="text-sm text-gray-500">
+                      {category.description}
+                    </p>
                   </div>
                   <div className="flex items-center space-x-2">
                     {[1, 2, 3, 4, 5].map((score) => (
@@ -66,7 +68,7 @@ export default function Observations({ formData, handleSwitchChange, handleInput
                         onClick={() => handleScoreChange(category.name, score)}
                         className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
                           formData.observations[category.name] === score
-                            ? "bg-primary text-white"
+                            ? "bg-[var(--primary-dark)] text-white"
                             : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                         }`}
                       >
