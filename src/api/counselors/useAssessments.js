@@ -104,6 +104,15 @@ export const useAssessment = () => {
     }
   };
 
+  // Upload academic records
+  const uploadAcademicRecords = async (assessmentId, records) => {
+    const res = await axiosInstance.post(
+      `/assessments/${assessmentId}/academic-records`,
+      { records }
+    );
+    return res.data;
+  };
+
   return {
     loading,
     error,
@@ -113,5 +122,6 @@ export const useAssessment = () => {
     getAssessments,
     getAssessment,
     updateAssessment,
+    uploadAcademicRecords,
   };
 };

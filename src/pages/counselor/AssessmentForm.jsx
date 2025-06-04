@@ -222,7 +222,7 @@ export default function AssessmentForm() {
           <AcademicRecords
             formData={formData}
             handleSwitchChange={handleSwitchChange}
-            handleInputChange={handleInputChange}
+            assessmentId={id}
           />
         );
 
