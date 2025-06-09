@@ -339,7 +339,7 @@ export default function ProfileAssessmentForm() {
                   key.includes("dateOfBirth") ||
                   key.includes("Date")
                 ) {
-                  setValue(key, formatDate(value));
+                  setValue(key, value);
                 } else {
                   // setValue(key, value);
                   setValue(

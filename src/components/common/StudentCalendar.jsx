@@ -43,12 +43,12 @@ export default function StudentCalendar() {
     <div className="bg-white rounded-lg shadow p-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold text-[#184C85]">My Schedule</h2>
-        <button
+        {/* <button
           onClick={() => setShowModal(true)}
           className="flex items-center gap-2 px-4 py-2 bg-[#184C85] text-white rounded-lg hover:bg-[#123a69] transition"
         >
           <FaPlus /> New Appointment
-        </button>
+        </button> */}
       </div>
 
       <FullCalendar
