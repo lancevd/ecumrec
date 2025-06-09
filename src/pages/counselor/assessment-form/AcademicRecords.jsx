@@ -27,7 +27,11 @@ function transformToSchema(sheetData) {
   return records;
 }
 
-export default function AcademicRecords({ formData, handleSwitchChange, assessmentId }) {
+export default function AcademicRecords({
+  formData,
+  handleSwitchChange,
+  assessmentId,
+}) {
   const [records, setRecords] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const { uploadAcademicRecords } = useAssessment();
@@ -56,7 +60,7 @@ export default function AcademicRecords({ formData, handleSwitchChange, assessme
       setCurrentPage(0);
 
       // Sync with parent formData
-      handleSwitchChange("academicRecords", "records", transformed);
+      // handleSwitchChange("academicRecords", "records", transformed);
     };
 
     reader.readAsArrayBuffer(file);
@@ -73,7 +77,7 @@ export default function AcademicRecords({ formData, handleSwitchChange, assessme
     try {
       await uploadAcademicRecords(assessmentId, records);
       // Set status to true after successful upload
-      handleSwitchChange("academicRecords", "status", true);
+      // handleSwitchChange("academicRecords", "status", true);
       toast.success("Academic records uploaded successfully!");
     } catch (err) {
       alert("Upload failed: " + (err.response?.data?.message || err.message));
@@ -107,31 +111,37 @@ export default function AcademicRecords({ formData, handleSwitchChange, assessme
             />
             {records.length > 0 && (
               <div>
-                <div className="flex gap-2 my-2 items-center">
-                  <button
-                    onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
-                    disabled={currentPage === 0}
-                    className="px-2 py-1 rounded bg-gray-200"
-                  >
-                    Prev
-                  </button>
-                  <span className="font-semibold">{classes[currentPage]}</span>
-                  <button
-                    onClick={() =>
-                      setCurrentPage((p) => Math.min(p + 1, classes.length - 1))
-                    }
-                    disabled={currentPage === classes.length - 1}
-                    className="px-2 py-1 rounded bg-gray-200"
-                  >
-                    Next
-                  </button>
+                <div className="flex gap-2 my-2 justify-between items-center">
                   <button
                     onClick={handleUpload}
                     disabled={uploading}
-                    className="ml-4 px-4 py-2 rounded btn-secondary"
+                    className="ml-4 px-4 py-1 rounded btn-secondary"
                   >
                     {uploading ? "Uploading..." : "Upload Results"}
                   </button>
+                  <div className="flex gap-3 items-center">
+                    <button
+                      onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
+                      disabled={currentPage === 0}
+                      className="px-2 py-1 rounded bg-gray-200 border-blue-950 border"
+                    >
+                      Prev
+                    </button>
+                    <span className="font-semibold">
+                      {classes[currentPage]}
+                    </span>
+                    <button
+                      onClick={() =>
+                        setCurrentPage((p) =>
+                          Math.min(p + 1, classes.length - 1)
+                        )
+                      }
+                      disabled={currentPage === classes.length - 1}
+                      className="px-2 py-1 rounded bg-gray-200 border-blue-950 border"
+                    >
+                      Next
+                    </button>
+                  </div>
                 </div>
                 <table className="w-full border text-xs">
                   <thead>
