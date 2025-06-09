@@ -72,6 +72,8 @@ export default function AcademicRecords({ formData, handleSwitchChange, assessme
     setUploading(true);
     try {
       await uploadAcademicRecords(assessmentId, records);
+      // Set status to true after successful upload
+      handleSwitchChange("academicRecords", "status", true);
       toast.success("Academic records uploaded successfully!");
     } catch (err) {
       alert("Upload failed: " + (err.response?.data?.message || err.message));

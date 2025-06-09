@@ -64,6 +64,7 @@ export default function AssessmentForm() {
       tests: [],
     },
     academicRecords: {
+      status: false,
       classes: [],
     },
     observations: {
