@@ -100,15 +100,25 @@ export default function AcademicRecords({
         </div>
         {formData.academicRecords.status && (
           <div className="space-y-4">
-            <p className="small">
-              Upload an xls or .csv file for the result of the student
-            </p>
-            <input
-              type="file"
-              accept=".csv,.xls,.xlsx"
-              onChange={handleFileUpload}
-              className="mb-4"
-            />
+            <div className="flex flex-col gap-4 md:flex-row justify-between">
+              <div>
+                <p className="small">
+                  Upload an xls or .csv file for the result of the student
+                </p>
+                <input
+                  type="file"
+                  accept=".csv,.xls,.xlsx"
+                  onChange={handleFileUpload}
+                  className="mb-4"
+                />
+              </div>
+              <a
+                href="/resources/Sample_Academic_Records_Template.csv"
+                download="Sample_Academic_Records_Template.csv"
+              >
+                <div className="btn-primary">Download Record Sample</div>
+              </a>
+            </div>
             {records.length > 0 && (
               <div>
                 <div className="flex gap-2 my-2 justify-between items-center">
