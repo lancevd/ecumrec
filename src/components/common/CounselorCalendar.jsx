@@ -1,45 +1,45 @@
-import { useState } from 'react';
-import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import { FaPlus, FaClock, FaUser } from 'react-icons/fa';
+import { useState } from "react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import { FaPlus, FaClock, FaUser } from "react-icons/fa";
 
 // Mock data for appointments
 const mockAppointments = [
   {
-    id: '1',
-    title: 'John Doe - Counseling Session',
-    start: '2025-05-28T10:00:00',
-    end: '2025-05-28T11:00:00',
-    backgroundColor: '#184C85',
-    borderColor: '#184C85',
+    id: "1",
+    title: "John Doe - Counseling Session",
+    start: "2025-05-28T10:00:00",
+    end: "2025-05-28T11:00:00",
+    backgroundColor: "#184C85",
+    borderColor: "#184C85",
     extendedProps: {
-      studentId: '1',
-      status: 'confirmed',
-      type: 'counseling',
+      studentId: "1",
+      status: "confirmed",
+      type: "counseling",
     },
   },
   {
-    id: '2',
-    title: 'Jane Smith - Study Skills Workshop',
-    start: '2025-05-29T14:00:00',
-    end: '2025-05-29T15:30:00',
-    backgroundColor: '#184C85',
-    borderColor: '#184C85',
+    id: "2",
+    title: "Jane Smith - Study Skills Workshop",
+    start: "2025-05-29T14:00:00",
+    end: "2025-05-29T15:30:00",
+    backgroundColor: "#184C85",
+    borderColor: "#184C85",
     extendedProps: {
-      studentId: '2',
-      status: 'pending',
-      type: 'workshop',
+      studentId: "2",
+      status: "pending",
+      type: "workshop",
     },
   },
 ];
 
 // Mock data for students
 const mockStudents = [
-  { id: '1', name: 'John Doe' },
-  { id: '2', name: 'Jane Smith' },
-  { id: '3', name: 'Mike Johnson' },
+  { id: "1", name: "John Doe" },
+  { id: "2", name: "Jane Smith" },
+  { id: "3", name: "Mike Johnson" },
 ];
 
 export default function CounselorCalendar() {
@@ -71,8 +71,10 @@ export default function CounselorCalendar() {
           <FaClock className="text-gray-500" />
           {eventInfo.timeText}
         </div>
-        {eventInfo.event.extendedProps.status === 'pending' && (
-          <div className="text-xs text-yellow-600 mt-1">Pending Confirmation</div>
+        {eventInfo.event.extendedProps.status === "pending" && (
+          <div className="text-xs text-yellow-600 mt-1">
+            Pending Confirmation
+          </div>
         )}
       </div>
     );
@@ -299,4 +301,4 @@ export default function CounselorCalendar() {
       )}
     </div>
   );
-} 
+}
