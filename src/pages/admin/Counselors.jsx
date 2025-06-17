@@ -20,7 +20,7 @@ const Counselors = () => {
     const fetchCounselors = async () => {
       try {
         const response = await axiosInstance.get(
-          `/users/schools/${user.id}/students`
+          `/users/schools/${user.id}/counselors`
         );
         setCounselors(response.data.data);
       } catch (error) {
