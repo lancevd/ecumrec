@@ -283,15 +283,14 @@ export default function ProfileAssessmentForm() {
         Object.entries(data.personalData).forEach(([key, value]) => {
           if (value !== null && value !== undefined) {
             // Format date fields
-            if (
-              key.includes("Dob") ||
-              key.includes("dateOfBirth") ||
-              key.includes("Date")
-            ) {
-              setValue(key, formatDate(value));
-            } else {
+            // if (
+            //   key.includes("Dob") ||
+            //   key.includes("dateOfBirth") ||
+            //   key.includes("Date")
+            // ) {
+            //   setValue(key, formatDate(value));
+            // } else 
               setValue(key, value);
-            }
           }
         });
       }
@@ -305,10 +304,17 @@ export default function ProfileAssessmentForm() {
           Object.entries(data.familyBackground.father).forEach(
             ([key, value]) => {
               if (value !== null && value !== undefined) {
-                setValue(
-                  `father${key.charAt(0).toUpperCase() + key.slice(1)}`,
-                  value
-                );
+                if (
+                  key.includes("Dob") ||
+                  key.includes("dateOfBirth") ||
+                  key.includes("Date")
+                ) {
+                  setValue(`father${key}`, formatDate(value));
+                } else
+                  setValue(
+                    `father${key.charAt(0).toUpperCase() + key.slice(1)}`,
+                    value
+                  );
               }
             }
           );
@@ -319,6 +325,16 @@ export default function ProfileAssessmentForm() {
           Object.entries(data.familyBackground.mother).forEach(
             ([key, value]) => {
               if (value !== null && value !== undefined) {
+                  setValue(key, value);
+                if (
+                  key.includes("Dob") ||
+                  key.includes("dateOfBirth") ||
+                  key.includes("Date") || 
+                  key.includes("DateOfBirth")
+                ) {
+                  setValue(`mother${key}`, value);
+                } 
+                else
                 setValue(
                   `mother${key.charAt(0).toUpperCase() + key.slice(1)}`,
                   value
@@ -339,14 +355,12 @@ export default function ProfileAssessmentForm() {
                   key.includes("dateOfBirth") ||
                   key.includes("Date")
                 ) {
-                  setValue(key, value);
-                } else {
-                  // setValue(key, value);
+                  setValue(`guardian${key}`, value);
+                } else 
                   setValue(
                   `guardian${key.charAt(0).toUpperCase() + key.slice(1)}`,
                   value
                 );
-                }
               } 
             }
           );
@@ -370,15 +384,15 @@ export default function ProfileAssessmentForm() {
             ].includes(key)
           ) {
             // Format date fields
-            if (
-              key.includes("Dob") ||
-              key.includes("dateOfBirth") ||
-              key.includes("Date")
-            ) {
-              setValue(key, formatDate(value));
-            } else {
+            // if (
+            //   key.includes("Dob") ||
+            //   key.includes("dateOfBirth") ||
+            //   key.includes("Date")
+            // ) {
+            //   setValue(key, formatDate(value));
+            // } else {
               setValue(key, value);
-            }
+            // }
           }
         });
       }
@@ -387,48 +401,34 @@ export default function ProfileAssessmentForm() {
       if (data.educationalBackground) {
         const levels = [];
 
-        if (data.educationalBackground.schools?.primarySchoolName) {
+        if (data.educationalBackground.schools?.primary?.schoolName) {
           levels.push("primary");
-          Object.entries(data.educationalBackground.schools).forEach(
+          Object.entries(data.educationalBackground.schools.primary).forEach(
             ([key, value]) => {
-              if (
-                key.startsWith("primary") &&
-                value !== null &&
-                value !== undefined
-              ) {
-                setValue(key, value);
+              if (value !== null && value !== undefined) {
+                setValue(`primary${key.charAt(0).toUpperCase() + key.slice(1)}`, value);
               }
             }
           );
         }
 
-        if (data.educationalBackground.schools?.juniorSecondarySchoolName) {
+        if (data.educationalBackground.schools?.juniorSecondary?.schoolName) {
           levels.push("junior");
-          Object.entries(data.educationalBackground.schools).forEach(
+          Object.entries(data.educationalBackground.schools.juniorSecondary).forEach(
             ([key, value]) => {
-              if (
-                key.startsWith("juniorSecondary") &&
-                value !== null &&
-                value !== undefined
-              ) {
-                const newKey = key.replace("juniorSecondary", "junior");
-                setValue(newKey, value);
+              if (value !== null && value !== undefined) {
+                setValue(`junior${key.charAt(0).toUpperCase() + key.slice(1)}`, value);
               }
             }
           );
         }
 
-        if (data.educationalBackground.schools?.seniorSecondarySchoolName) {
+        if (data.educationalBackground.schools?.seniorSecondary?.schoolName) {
           levels.push("senior");
-          Object.entries(data.educationalBackground.schools).forEach(
+          Object.entries(data.educationalBackground.schools.seniorSecondary).forEach(
             ([key, value]) => {
-              if (
-                key.startsWith("seniorSecondary") &&
-                value !== null &&
-                value !== undefined
-              ) {
-                const newKey = key.replace("seniorSecondary", "senior");
-                setValue(newKey, value);
+              if (value !== null && value !== undefined) {
+                setValue(`senior${key.charAt(0).toUpperCase() + key.slice(1)}`, value);
               }
             }
           );
@@ -537,10 +537,18 @@ export default function ProfileAssessmentForm() {
   };
 
   const toggleEducationLevel = (level) => {
-    if (level === "primary") return;
-    setActiveEducationLevels((prev) =>
-      prev.includes(level) ? prev.filter((l) => l !== level) : [...prev, level]
-    );
+    setActiveEducationLevels((prev) => {
+      if (prev.includes(level)) {
+        // If removing a level, clear its form values
+        const fieldsToClear = educationFields.map(
+          (field) => `${level}${field.suffix}`
+        );
+        fieldsToClear.forEach((field) => setValue(field, ""));
+        return prev.filter((l) => l !== level);
+      } else {
+        return [...prev, level];
+      }
+    });
   };
 
   const currentStep = steps[step];
