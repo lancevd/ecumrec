@@ -33,7 +33,7 @@ export default function StudentDirectory() {
         className="mb-4 w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
       />
       <div className="bg-white rounded-lg shadow divide-y">
-        {students.map((student) => (
+        {students && students.map((student) => (
           <div
             key={student._id}
             className="flex items-center justify-between p-4 hover:bg-gray-50"
