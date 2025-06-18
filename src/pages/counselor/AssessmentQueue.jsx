@@ -7,7 +7,7 @@ export default function AssessmentQueue() {
   const [assessments, setAssessments] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [statusFilter, setStatusFilter] = useState("ongoing");
+  const [statusFilter, setStatusFilter] = useState("");
   const { getMyAssessments, loading, error } = useAssessment();
   const navigate = useNavigate();
 
@@ -59,6 +59,14 @@ export default function AssessmentQueue() {
         <h1 className="text-2xl font-bold">Assessment Queue</h1>
         <div className="flex gap-2">
           <button
+            onClick={() => handleStatusChange("")}
+            className={`rounded btn-primary  ${
+              statusFilter === "" ? "btn-secondary" : "btn-primary"
+            }`}
+          >
+            All
+          </button>
+          <button
             onClick={() => handleStatusChange("ongoing")}
             className={`rounded btn-primary  ${
               statusFilter === "ongoing" ? "btn-secondary" : "btn-primary"
@@ -74,14 +82,7 @@ export default function AssessmentQueue() {
           >
             Completed
           </button>
-          <button
-            onClick={() => handleStatusChange("cancelled")}
-            className={`rounded btn-primary  ${
-              statusFilter === "cancelled" ? "btn-secondary" : "btn-primary"
-            }`}
-          >
-            Cancelled
-          </button>
+          
         </div>
       </div>
 

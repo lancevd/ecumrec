@@ -32,8 +32,7 @@ export default function AssessmentForm() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showEndModal, setShowEndModal] = useState(false);
-  const { getAssessment, updateAssessment } = useAssessment();
-  const [studentName, setStudentName] = useState("");
+  const { getAssessment, updateAssessment, completeAssessment } = useAssessment();
   const [formData, setFormData] = useState({
     physicalDevelopment: {
       height: "",
@@ -176,12 +175,10 @@ export default function AssessmentForm() {
 
   const handleEndAssessment = async () => {
     try {
-      await updateAssessment(id, { ...formData, status: "completed" });
-      toast.success("Assessment completed successfully");
+      await completeAssessment(id, { ...formData, status: "completed" });
       navigate("/counselor/assessment-queue");
     } catch (err) {
       setError(err.message || "Failed to complete assessment");
-      toast.error("Failed to complete assessment");
     }
   };
 
@@ -295,7 +292,7 @@ export default function AssessmentForm() {
           </h1>
           <button 
             onClick={() => setShowEndModal(true)}
-            className="btn-primary text-sm md:text-base py-2 px-3 rounded-md"
+            className={`btn-primary text-sm md:text-base py-2 px-3 ${formData.status ==="completed" && "hidden"} rounded-md`}
           >
             End Assessment
           </button>
@@ -325,7 +322,7 @@ export default function AssessmentForm() {
         <div className="flex gap-4">
           <button
             onClick={handleSave}
-            className="px-4 py-2 rounded btn-secondary"
+            className={`px-4 py-2 rounded btn-secondary ${formData.status ==="completed" && "hidden"}`}
           >
             Update
           </button>

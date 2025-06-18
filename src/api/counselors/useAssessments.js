@@ -113,6 +113,21 @@ export const useAssessment = () => {
     return res.data;
   };
 
+  const completeAssessment = async (assessmentId, data) => {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.put(`/assessments/${assessmentId}/complete`, data);
+      toast.success(response.data.message || "Assessment completed successfully");
+      return response.data;
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to complete assessment");
+      toast.error(err.response?.data?.message || "Error completing assessment");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return {
     loading,
     error,
@@ -123,5 +138,6 @@ export const useAssessment = () => {
     getAssessment,
     updateAssessment,
     uploadAcademicRecords,
+    completeAssessment,
   };
 };
