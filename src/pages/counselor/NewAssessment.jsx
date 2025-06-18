@@ -224,14 +224,27 @@ export default function NewAssessment() {
                   ])
                 )}
 
-              {selectedStudent.educationalBackground &&
-                renderInfoBlock(
-                  "Educational Background",
-                  selectedStudent.educationalBackground,
-                  Object.keys(selectedStudent.educationalBackground).map(
-                    (key) => [formatLabel(key), key]
-                  )
-                )}
+              {Object.entries(
+                selectedStudent.educationalBackground.schools
+              ).map(([level, info]) => (
+                <div key={level} className="border rounded-lg p-4 mb-4">
+                  <h5 className="font-bold text-lg text-[#184C85] mb-2">
+                    {formatLabel(level)}
+                  </h5>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {Object.entries(info).map(([field, val]) => (
+                      <div key={field} className="flex flex-col">
+                        <span className="font-medium">
+                          {formatLabel(field)}:
+                        </span>
+                        <span className="mt-1">
+                          {val != null && val !== "" ? val : "—"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
 
               {selectedStudent.notes && selectedStudent.notes.notes && (
                 <div className="mb-6">
