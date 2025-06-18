@@ -31,7 +31,9 @@ export default function AssessmentForm() {
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showEndModal, setShowEndModal] = useState(false);
   const { getAssessment, updateAssessment } = useAssessment();
+  const [studentName, setStudentName] = useState("");
   const [formData, setFormData] = useState({
     physicalDevelopment: {
       height: "",
@@ -172,6 +174,17 @@ export default function AssessmentForm() {
     }
   };
 
+  const handleEndAssessment = async () => {
+    try {
+      await updateAssessment(id, { ...formData, status: "completed" });
+      toast.success("Assessment completed successfully");
+      navigate("/counselor/assessment-queue");
+    } catch (err) {
+      setError(err.message || "Failed to complete assessment");
+      toast.error("Failed to complete assessment");
+    }
+  };
+
   const renderStep = () => {
     switch (steps[currentStep].id) {
       case "physicalDevelopment":
@@ -273,7 +286,21 @@ export default function AssessmentForm() {
           🔙Back
         </Link>
         <br />
-        <h1 className="text-2xl font-bold mb-2">Student Assessment</h1>
+        <div className="flex justify-between items-center gap-6">
+          <h1 className="text-lg md:text-2xl font-bold mb-2">
+            {formData
+              ? formData.studentId?.firstName + " " + formData.studentId?.lastName+"'s"
+              : "Student"}{" "}
+            Assessment
+          </h1>
+          <button 
+            onClick={() => setShowEndModal(true)}
+            className="btn-primary text-sm md:text-base py-2 px-3 rounded-md"
+          >
+            End Assessment
+          </button>
+        </div>
+
         <div className="flex items-center space-x-2 text-sm text-gray-500">
           <span>
             Step {currentStep + 1} of {steps.length}
@@ -311,6 +338,32 @@ export default function AssessmentForm() {
           </button>
         </div>
       </div>
+
+      {/* End Assessment Confirmation Modal */}
+      {showEndModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h2 className="text-xl font-bold mb-4">End Assessment</h2>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to end this assessment? This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowEndModal(false)}
+                className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleEndAssessment}
+                className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+              >
+                End Assessment
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
